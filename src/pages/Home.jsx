@@ -6,7 +6,7 @@ import { destinations, tourPackages, blogPosts, testimonials } from '../data';
 import DestinationCard from '../components/DestinationCard';
 import PackageCard from '../components/PackageCard';
 
-// Animated counter
+// ── Animated counter ──────────────────────────────
 function Counter({ value, suffix, duration = 2 }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -37,7 +37,7 @@ function Counter({ value, suffix, duration = 2 }) {
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
-// Page wrapper with transition
+// ── Page wrapper ──────────────────────────────────
 function PageWrapper({ children }) {
   return (
     <motion.div
@@ -51,28 +51,12 @@ function PageWrapper({ children }) {
   );
 }
 
-// Hero images carousel
+// ── Hero images ───────────────────────────────────
 const heroImages = [
-  {
-    url: "https://images.unsplash.com/photo-1612128952123-88ed13410495?w=1920&q=90",
-    title: "Hunza Valley",
-    subtitle: "Gilgit-Baltistan",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1636997209370-e2042d01d5a5?w=1920&q=90",
-    title: "Fairy Meadows",
-    subtitle: "Nanga Parbat Base",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1920&q=90",
-    title: "Lahore Fort",
-    subtitle: "Punjab, Pakistan",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=90",
-    title: "Swat Valley",
-    subtitle: "Khyber Pakhtunkhwa",
-  },
+  { url: "/blake-verdoorn-cssvEZacHvQ-unsplash.jpg", title: "Hunza Valley", subtitle: "Gilgit-Baltistan" },
+  { url: "/ffaamunchy-IxhT8pyjveY-unsplash.jpg", title: "Fairy Meadows", subtitle: "Nanga Parbat Base" },
+  { url: "/fa-creation-XRoH4UMAE9g-unsplash.jpg", title: "Lahore Fort", subtitle: "Punjab, Pakistan" },
+  { url: "/fa-creation-XRoH4UMAE9g-unsplash.jpg", title: "Swat Valley", subtitle: "Khyber Pakhtunkhwa" },
 ];
 
 export default function Home() {
@@ -80,10 +64,9 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
-  // Auto-cycle hero
   useEffect(() => {
     const t = setTimeout(() => setHeroIndex(i => (i + 1) % heroImages.length), 5000);
     return () => clearTimeout(t);
@@ -100,286 +83,242 @@ export default function Home() {
 
   return (
     <PageWrapper>
-      {/* ══════════════════════════════════ HERO ══════════════════════════════════ */}
-      <section ref={heroRef} className="relative h-screen min-h-[700px] overflow-hidden flex items-center">
-        {/* Background Carousel */}
+
+      {/* ══════════════════════════ HERO ══════════════════════════ */}
+      <section
+        ref={heroRef}
+        style={{ position: 'relative', height: '100vh', minHeight: '680px', overflow: 'hidden', display: 'flex', alignItems: 'center', backgroundColor: '#111827' }}
+      >
+        {/* Background */}
         <AnimatePresence mode="wait">
           <motion.div
             key={heroIndex}
-            initial={{ opacity: 0, scale: 1.05 }}
+            initial={{ opacity: 0, scale: 1.06 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2, ease: 'easeInOut' }}
-            style={{ y: heroY }}
-            className="absolute inset-0"
+            style={{ position: 'absolute', inset: 0, y: heroY }}
           >
-            <img
-              src={heroImages[heroIndex].url}
-              alt={heroImages[heroIndex].title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0" style={{
-              background: 'linear-gradient(to bottom, rgba(8,14,28,0.4) 0%, rgba(8,14,28,0.2) 40%, rgba(8,14,28,0.85) 100%)'
-            }} />
+            <img src={heroImages[heroIndex].url} alt={heroImages[heroIndex].title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div className="hero-overlay" style={{ position: 'absolute', inset: 0 }} />
             <div className="noise-overlay" />
           </motion.div>
         </AnimatePresence>
 
-        {/* Hero Content */}
-        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-4xl">
-            {/* Current location badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="flex items-center gap-2 mb-6"
-            >
-              <div className="flex items-center gap-2 glass px-4 py-2 rounded-full">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                <MapPin size={13} className="text-emerald-400" />
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={heroIndex}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    className="text-emerald-400 text-xs font-semibold tracking-wide"
-                  >
-                    {heroImages[heroIndex].subtitle}
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-            </motion.div>
-
-            {/* Main Headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-            >
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl font-bold text-white leading-tight mb-4">
-                Discover the{' '}
-                <br />
-                <span className="gradient-text">Soul of Pakistan</span>
-              </h1>
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.7 }}
-              className="text-gray-300 text-lg sm:text-xl max-w-2xl mb-10 leading-relaxed"
-            >
-              From the glaciers of Gilgit-Baltistan to the Mughal splendors of Lahore — experience Pakistan's extraordinary beauty, culture, and adventure.
-            </motion.p>
-
-            {/* Search Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.7 }}
-              className="glass rounded-2xl p-3 max-w-2xl"
-            >
-              <form onSubmit={handleSearch} className="flex gap-3">
-                <div className="relative flex-1">
-                  <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                    placeholder="Search destinations, valleys, cities..."
-                    className="input-dark pl-11 py-3.5 bg-transparent border-0 focus:ring-0"
-                  />
+        {/* Content */}
+        <motion.div style={{ opacity: heroOpacity, position: 'relative', zIndex: 10, width: '100%' }}>
+          <div className="container">
+            <div style={{ maxWidth: '720px' }}>
+              {/* Location badge */}
+              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.3)', padding: '6px 16px', borderRadius: '100px', marginBottom: '24px' }}>
+                  <span style={{ width: '7px', height: '7px', background: '#4ade80', borderRadius: '50%', animation: 'pulse 2s infinite' }} />
+                  <MapPin size={13} color="#86efac" />
+                  <AnimatePresence mode="wait">
+                    <motion.span key={heroIndex} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} style={{ color: 'white', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.05em' }}>
+                      {heroImages[heroIndex].subtitle}
+                    </motion.span>
+                  </AnimatePresence>
                 </div>
-                <button type="submit" className="btn-primary py-3.5 px-6 rounded-xl">
-                  <Search size={16} />
-                  <span className="hidden sm:inline">Search</span>
-                </button>
-              </form>
-            </motion.div>
+              </motion.div>
 
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.1, duration: 0.6 }}
-              className="flex flex-wrap gap-4 mt-8"
-            >
-              <Link to="/destinations" className="btn-gold">
-                Explore Destinations <ArrowRight size={16} />
-              </Link>
-              <Link to="/packages" className="btn-secondary">
-                <Play size={16} className="fill-current" />
-                View Tour Packages
-              </Link>
-            </motion.div>
+              {/* Headline */}
+              <motion.h1
+                className="font-display"
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', fontWeight: 800, color: 'white', lineHeight: 1.1, marginBottom: '20px', textShadow: '0 2px 24px rgba(0,0,0,0.25)' }}
+              >
+                Discover the<br />
+                <span style={{ background: 'linear-gradient(135deg, #6ee7b7 0%, #34d399 50%, #964734 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                  Soul of Pakistan
+                </span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                style={{ color: 'rgba(255,255,255,0.82)', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '36px', maxWidth: '560px', textShadow: '0 1px 8px rgba(0,0,0,0.3)' }}
+              >
+                From the glaciers of Gilgit-Baltistan to the Mughal splendors of Lahore — experience Pakistan's extraordinary beauty, culture, and adventure.
+              </motion.p>
+
+              {/* Search bar */}
+              <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.85 }}>
+                <form onSubmit={handleSearch} style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(20px)', borderRadius: '12px', padding: '8px', maxWidth: '560px', boxShadow: '0 8px 40px rgba(0,0,0,0.2)' }}>
+                  <div style={{ position: 'relative', flex: 1 }}>
+                    <Search size={17} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      placeholder="Search destinations, valleys..."
+                      style={{ width: '100%', padding: '11px 14px 11px 42px', background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', color: '#111827' }}
+                    />
+                  </div>
+                  <button type="submit" className="btn-primary" style={{ padding: '10px 22px', borderRadius: '8px', fontSize: '0.88rem', boxShadow: 'none' }}>
+                    <Search size={15} />
+                    Search
+                  </button>
+                </form>
+              </motion.div>
+
+              {/* CTA buttons */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.05 }} style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '28px' }}>
+                <Link to="/destinations" className="btn-amber" style={{ fontSize: '0.9rem', padding: '12px 24px' }}>
+                  Explore Destinations <ArrowRight size={16} />
+                </Link>
+                <Link to="/packages" className="btn-outline-white" style={{ fontSize: '0.9rem', padding: '12px 24px' }}>
+                  <Play size={14} style={{ fill: 'white' }} />
+                  View Packages
+                </Link>
+              </motion.div>
+            </div>
           </div>
         </motion.div>
 
-        {/* Hero Dots */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+        {/* Slide dots */}
+        <div style={{ position: 'absolute', bottom: '32px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', gap: '8px' }}>
           {heroImages.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setHeroIndex(i)}
-              className={`transition-all duration-300 rounded-full ${i === heroIndex ? 'w-8 h-2 bg-emerald-400' : 'w-2 h-2 bg-white/30 hover:bg-white/60'}`}
-            />
+            <button key={i} onClick={() => setHeroIndex(i)} style={{ width: i === heroIndex ? '28px' : '8px', height: '8px', borderRadius: '100px', background: i === heroIndex ? 'white' : 'rgba(255,255,255,0.4)', border: 'none', cursor: 'pointer', transition: 'all 0.3s' }} />
           ))}
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 1.8 }}
-          className="absolute bottom-10 right-8 z-10 hidden md:flex flex-col items-center gap-1 text-white/40"
-        >
-          <span className="text-xs tracking-widest rotate-90 origin-center" style={{ writingMode: 'vertical-rl' }}>SCROLL</span>
-          <ChevronDown size={16} />
+        {/* Scroll hint */}
+        <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }} style={{ position: 'absolute', bottom: '40px', right: '32px', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'rgba(255,255,255,0.45)' }}>
+          <span style={{ fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', writingMode: 'vertical-rl' }}>SCROLL</span>
+          <ChevronDown size={15} />
         </motion.div>
       </section>
 
-      {/* ══════════════════════════════ STATS BAR ══════════════════════════════ */}
-      <section className="py-12 border-y border-[#1e2d4a]" style={{ background: 'linear-gradient(135deg, rgba(10,102,64,0.08) 0%, rgba(15,24,41,0.9) 50%, rgba(201,151,59,0.05) 100%)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      {/* ══════════════════════════ STATS ══════════════════════════ */}
+      <section style={{ background: 'white', borderBottom: '1px solid #e5e7eb' }}>
+        <div className="container section-sm">
+          <div id="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '32px' }}>
+            <style>{`@media(min-width:640px){#stats-grid{grid-template-columns:repeat(4,1fr)}}`}</style>
             {[
-              { value: 18, suffix: '+', label: 'Destinations', icon: MapPin },
-              { value: 50000, suffix: '+', label: 'Happy Travelers', icon: Users },
-              { value: 12, suffix: '+', label: 'Tour Packages', icon: Compass },
-              { value: 4.9, suffix: '★', label: 'Average Rating', icon: Star },
+              { value: 18, suffix: '+', label: 'Destinations', icon: MapPin, color: '#024950' },
+              { value: 50000, suffix: '+', label: 'Happy Travelers', icon: Users, color: '#024950' },
+              { value: 12, suffix: '+', label: 'Tour Packages', icon: Compass, color: '#024950' },
+              { value: 4.9, suffix: '★', label: 'Average Rating', icon: Star, color: '#964734' },
             ].map((stat, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="text-center"
+                transition={{ delay: i * 0.1 }}
+                style={{ textAlign: 'center' }}
               >
-                <div className="flex justify-center mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-900/40 border border-emerald-700/30 flex items-center justify-center">
-                    <stat.icon size={18} className="text-emerald-400" />
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+                  <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: '#f0fdf4', border: '1.5px solid #d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <stat.icon size={22} color={stat.color} />
                   </div>
                 </div>
-                <div className="text-3xl font-bold text-white mb-1">
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#111827', lineHeight: 1 }}>
                   <Counter value={stat.value} suffix={stat.suffix} />
                 </div>
-                <div className="text-gray-400 text-sm">{stat.label}</div>
+                <div style={{ color: '#6b7280', fontSize: '0.88rem', marginTop: '4px' }}>{stat.label}</div>
               </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Responsive 4-col */}
+        <style>{`@media(min-width:640px){ .stats-grid { grid-template-columns: repeat(4,1fr) !important; } }`}</style>
+      </section>
+
+      {/* ══════════════════ FEATURED DESTINATIONS ══════════════════ */}
+      <section style={{ background: '#f9fafb' }}>
+        <div className="container section">
+          {/* Header */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '48px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '16px' }}>
+              <div>
+                <div className="section-label">Curated Picks</div>
+                <h2 className="section-title" style={{ margin: 0 }}>
+                  Featured <span className="text-gradient-amber">Destinations</span>
+                </h2>
+                <p className="section-subtitle" style={{ marginTop: '10px' }}>Handpicked by our travel experts — the most breathtaking places waiting to be discovered.</p>
+              </div>
+              <Link to="/destinations" className="btn-secondary" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
+                View All <ArrowRight size={15} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Grid */}
+          <div className="grid-3">
+            {featuredDestinations.map((d, i) => (
+              <DestinationCard key={d.id} destination={d} index={i} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════ FEATURED DESTINATIONS ══════════════════════════ */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14"
-        >
-          <div>
-            <div className="section-label">Curated Picks</div>
-            <h2 className="font-display text-4xl sm:text-5xl font-bold text-white">
-              Featured <span className="gradient-text-gold">Destinations</span>
-            </h2>
-            <p className="text-gray-400 mt-3 max-w-xl">Handpicked by our travel experts — the most breathtaking places in Pakistan waiting to be discovered.</p>
-          </div>
-          <Link to="/destinations" className="btn-secondary flex-shrink-0 self-start md:self-auto">
-            View All <ArrowRight size={15} />
-          </Link>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredDestinations.map((d, i) => (
-            <DestinationCard key={d.id} destination={d} index={i} />
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════ WHY PAKISTAN ══════════════════════════════ */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(135deg, rgba(10,102,64,0.05) 0%, rgba(8,14,28,1) 40%, rgba(201,151,59,0.04) 100%)'
-        }} />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left: Image collage */}
+      {/* ══════════════════════ WHY PAKISTAN ═══════════════════════ */}
+      <section style={{ background: 'white' }}>
+        <div className="container section">
+          <div id="why-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '48px', alignItems: 'center' }}>
+            <style>{`@media(min-width:1024px){#why-grid{grid-template-columns:1fr 1fr}}`}</style>
+            {/* Image collage */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="relative"
+              style={{ position: 'relative' }}
             >
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-3">
-                  <img src="https://images.unsplash.com/photo-1612128952123-88ed13410495?w=600&q=85" alt="Hunza" className="w-full h-48 object-cover rounded-2xl" />
-                  <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=85" alt="Lahore" className="w-full h-32 object-cover rounded-2xl" />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <img src="/blake-verdoorn-cssvEZacHvQ-unsplash.jpg" alt="Hunza" style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }} />
+                  <img src="/fa-creation-XRoH4UMAE9g-unsplash.jpg" alt="Lahore" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }} />
                 </div>
-                <div className="space-y-3 mt-8">
-                  <img src="https://images.unsplash.com/photo-1636997209370-e2042d01d5a5?w=600&q=85" alt="Fairy Meadows" className="w-full h-32 object-cover rounded-2xl" />
-                  <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=85" alt="Gwadar" className="w-full h-48 object-cover rounded-2xl" />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '32px' }}>
+                  <img src="/ffaamunchy-IxhT8pyjveY-unsplash.jpg" alt="Fairy Meadows" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }} />
+                  <img src="/zain-raza-vfJKqrzYwqo-unsplash.jpg" alt="Gwadar" style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }} />
                 </div>
               </div>
               {/* Floating badge */}
-              <motion.div
-                animate={{ y: [-6, 6, -6] }}
-                transition={{ repeat: Infinity, duration: 3 }}
-                className="absolute -bottom-4 -right-4 glass px-5 py-4 rounded-2xl shadow-2xl"
-                style={{ border: '1px solid rgba(201,151,59,0.3)' }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-400 rounded-xl flex items-center justify-center">
-                    <Award size={18} className="text-white" />
+              <motion.div animate={{ y: [-5, 5, -5] }} transition={{ repeat: Infinity, duration: 3 }} style={{ position: 'absolute', bottom: '-16px', right: '-16px', background: 'white', padding: '16px 20px', borderRadius: '16px', boxShadow: '0 8px 40px rgba(0,0,0,0.15)', border: '1.5px solid #fef3c7' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '42px', height: '42px', background: 'linear-gradient(135deg, #964734, #b05742)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Award size={20} color="white" />
                   </div>
                   <div>
-                    <div className="text-white font-bold text-sm">Top Travel Destination</div>
-                    <div className="text-gray-400 text-xs">Asia 2024 Award</div>
+                    <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#111827' }}>Top Travel Destination</div>
+                    <div style={{ color: '#6b7280', fontSize: '0.75rem' }}>Asia 2024 Award</div>
                   </div>
                 </div>
               </motion.div>
             </motion.div>
 
-            {/* Right: Text */}
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-            >
+            {/* Text content */}
+            <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
               <div className="section-label">Why Pakistan?</div>
-              <h2 className="font-display text-4xl sm:text-5xl font-bold text-white mb-6">
-                A Land of <span className="gradient-text">Extraordinary</span> Contrasts
+              <h2 className="section-title">
+                A Land of <span className="text-gradient-green">Extraordinary</span> Contrasts
               </h2>
-              <p className="text-gray-400 text-lg leading-relaxed mb-8">
+              <p style={{ color: '#4b5563', fontSize: '1rem', lineHeight: 1.75, marginBottom: '32px' }}>
                 Pakistan is home to 5 of the world's 14 eight-thousander peaks, 2,000+ year-old civilizations, ancient Mughal empires, and pristine Arabian coastlines — all within one remarkable country.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '32px' }}>
                 {[
                   { icon: Mountain, title: "World's Highest Peaks", desc: "K2, Nanga Parbat & 3 more 8,000m summits" },
                   { icon: Globe, title: "UNESCO Heritage Sites", desc: "Mohenjo-daro, Lahore Fort & more" },
                   { icon: Camera, title: "Unmatched Photography", desc: "Landscapes unlike anywhere else on Earth" },
                   { icon: Shield, title: "Safe & Welcoming", desc: "Warm hospitality in every corner" },
                 ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.4 }}
-                    className="flex gap-3 p-4 glass-light rounded-xl"
-                  >
-                    <div className="w-9 h-9 bg-emerald-900/50 border border-emerald-700/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <item.icon size={16} className="text-emerald-400" />
+                  <motion.div key={i} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} style={{ display: 'flex', gap: '12px', padding: '14px', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
+                    <div style={{ width: '36px', height: '36px', background: '#f0fdf4', border: '1px solid #d1fae5', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <item.icon size={16} color="#024950" />
                     </div>
                     <div>
-                      <div className="text-white font-semibold text-sm">{item.title}</div>
-                      <div className="text-gray-400 text-xs mt-0.5">{item.desc}</div>
+                      <div style={{ fontWeight: 600, fontSize: '0.85rem', color: '#111827' }}>{item.title}</div>
+                      <div style={{ color: '#6b7280', fontSize: '0.78rem', marginTop: '2px' }}>{item.desc}</div>
                     </div>
                   </motion.div>
                 ))}
@@ -391,74 +330,63 @@ export default function Home() {
             </motion.div>
           </div>
         </div>
+
+        {/* Make 2-col on lg */}
+        <style>{`
+          @media(min-width:1024px){
+            .why-pakistan-grid { grid-template-columns: 1fr 1fr !important; }
+          }
+        `}</style>
       </section>
 
-      {/* ══════════════════════════ TOUR PACKAGES ══════════════════════════ */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14"
-        >
-          <div>
-            <div className="section-label">Curated Experiences</div>
-            <h2 className="font-display text-4xl sm:text-5xl font-bold text-white">
-              Featured <span className="gradient-text-green">Tour Packages</span>
-            </h2>
-            <p className="text-gray-400 mt-3 max-w-xl">All-inclusive packages designed by local experts for an unforgettable Pakistan experience.</p>
+      {/* ══════════════════════ TOUR PACKAGES ═══════════════════════ */}
+      <section style={{ background: '#f9fafb' }}>
+        <div className="container section">
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '16px', marginBottom: '48px' }}>
+            <div>
+              <div className="section-label">Curated Experiences</div>
+              <h2 className="section-title" style={{ margin: 0 }}>
+                Featured <span className="text-gradient-green">Tour Packages</span>
+              </h2>
+              <p className="section-subtitle" style={{ marginTop: '10px' }}>All-inclusive packages designed by local experts for an unforgettable Pakistan experience.</p>
+            </div>
+            <Link to="/packages" className="btn-secondary" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
+              All Packages <ArrowRight size={15} />
+            </Link>
           </div>
-          <Link to="/packages" className="btn-secondary flex-shrink-0 self-start md:self-auto">
-            All Packages <ArrowRight size={15} />
-          </Link>
-        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredPackages.map((p, i) => (
-            <PackageCard key={p.id} pkg={p} index={i} />
-          ))}
+          <div className="grid-3">
+            {featuredPackages.map((p, i) => (
+              <PackageCard key={p.id} pkg={p} index={i} />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ══════════════════════════ TESTIMONIALS ══════════════════════════ */}
-      <section className="py-24 relative overflow-hidden" style={{ background: 'rgba(10,102,64,0.03)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-14"
-          >
-            <div className="section-label justify-center">Traveler Stories</div>
-            <h2 className="font-display text-4xl sm:text-5xl font-bold text-white">
-              What Our <span className="gradient-text-gold">Travelers Say</span>
+      {/* ══════════════════════ TESTIMONIALS ════════════════════════ */}
+      <section style={{ background: 'white' }}>
+        <div className="container section">
+          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: '48px' }}>
+            <div className="section-label" style={{ justifyContent: 'center' }}>Traveler Stories</div>
+            <h2 className="section-title">
+              What Our <span className="text-gradient-amber">Travelers Say</span>
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid-4">
             {testimonials.map((t, i) => (
-              <motion.div
-                key={t.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="glass rounded-2xl p-6 hover:border-emerald-700/40 transition-all"
-                style={{ border: '1px solid rgba(30,45,74,0.6)' }}
-              >
-                <div className="flex gap-1 mb-4">
+              <motion.div key={t.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} style={{ background: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', transition: 'box-shadow 0.3s' }}>
+                <div style={{ display: 'flex', gap: '3px', marginBottom: '14px' }}>
                   {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} size={14} className="text-yellow-400 fill-yellow-400" />
+                    <Star key={j} size={14} color="#964734" fill="#964734" />
                   ))}
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed mb-5 italic">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                <p style={{ color: '#4b5563', fontSize: '0.88rem', lineHeight: 1.7, marginBottom: '18px', fontStyle: 'italic' }}>"{t.text}"</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <img src={t.avatar} alt={t.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #d1fae5' }} />
                   <div>
-                    <div className="text-white font-semibold text-sm">{t.name}</div>
-                    <div className="text-gray-500 text-xs">{t.country} • {t.tour}</div>
+                    <div style={{ fontWeight: 600, fontSize: '0.88rem', color: '#111827' }}>{t.name}</div>
+                    <div style={{ color: '#9ca3af', fontSize: '0.75rem' }}>{t.country} · {t.tour}</div>
                   </div>
                 </div>
               </motion.div>
@@ -467,106 +395,97 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════ RECENT BLOG ══════════════════════════ */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14"
-        >
-          <div>
-            <div className="section-label">Travel Insights</div>
-            <h2 className="font-display text-4xl sm:text-5xl font-bold text-white">
-              From Our <span className="gradient-text-gold">Travel Blog</span>
-            </h2>
+      {/* ══════════════════════ BLOG ═════════════════════════════════*/}
+      <section style={{ background: '#f9fafb' }}>
+        <div className="container section">
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '16px', marginBottom: '48px' }}>
+            <div>
+              <div className="section-label">Travel Insights</div>
+              <h2 className="section-title" style={{ margin: 0 }}>
+                From Our <span className="text-gradient-amber">Travel Blog</span>
+              </h2>
+            </div>
+            <Link to="/blog" className="btn-secondary" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
+              All Articles <ArrowRight size={15} />
+            </Link>
           </div>
-          <Link to="/blog" className="btn-secondary flex-shrink-0 self-start md:self-auto">
-            All Articles <ArrowRight size={15} />
-          </Link>
-        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {recentPosts.map((post, i) => (
-            <motion.div
-              key={post.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-            >
-              <Link to={`/blog/${post.slug}`}>
-                <div className="destination-card group">
-                  <div className="relative overflow-hidden" style={{ height: '200px' }}>
-                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" loading="lazy" />
-                    <div className="card-overlay" />
-                    <div className="absolute top-4 left-4">
-                      <span className="badge badge-emerald">{post.category}</span>
-                    </div>
-                    <div className="absolute bottom-4 left-4 text-xs text-gray-300">{post.readTime}</div>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-white font-bold mb-2 leading-snug group-hover:text-emerald-400 transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <img src={post.authorImage} alt={post.author} className="w-7 h-7 rounded-full object-cover" />
-                        <span className="text-gray-400 text-xs">{post.author}</span>
+          <div className="grid-3">
+            {recentPosts.map((post, i) => (
+              <motion.div key={post.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                <Link to={`/blog/${post.slug}`}>
+                  <div className="destination-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <div style={{ position: 'relative', overflow: 'hidden', height: '210px' }}>
+                      <img src={post.image} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                      <div className="card-overlay" style={{ position: 'absolute', inset: 0 }} />
+                      <div style={{ position: 'absolute', top: '14px', left: '14px' }}>
+                        <span className="badge badge-green" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(8px)' }}>{post.category}</span>
                       </div>
-                      <span className="text-emerald-400 text-xs font-semibold flex items-center gap-1">
-                        Read <ArrowRight size={12} />
-                      </span>
+                      <div style={{ position: 'absolute', bottom: '14px', left: '14px', color: 'rgba(255,255,255,0.85)', fontSize: '0.75rem', background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(6px)', padding: '3px 10px', borderRadius: '100px' }}>{post.readTime}</div>
+                    </div>
+                    <div style={{ padding: '20px', background: 'white', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <h3 style={{ fontWeight: 700, fontSize: '1rem', color: '#111827', marginBottom: '8px', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {post.title}
+                      </h3>
+                      <p style={{ color: '#6b7280', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px', flexGrow: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{post.excerpt}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #f3f4f6' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <img src={post.authorImage} alt={post.author} style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
+                          <span style={{ color: '#6b7280', fontSize: '0.8rem' }}>{post.author}</span>
+                        </div>
+                        <span style={{ color: '#024950', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          Read <ArrowRight size={12} />
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ══════════════════════════ CTA BANNER ══════════════════════════ */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-3xl"
-          style={{
-            background: 'linear-gradient(135deg, #062a1e 0%, #0a4028 40%, #0f5c3a 100%)',
-            border: '1px solid rgba(10,102,64,0.4)'
-          }}
-        >
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400 rounded-full filter blur-3xl -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold rounded-full filter blur-3xl translate-y-1/2 -translate-x-1/2" style={{ background: '#c9973b' }} />
-          </div>
-          <div className="relative p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div>
-              <div className="section-label text-emerald-400" style={{ color: '#4ade80' }}>Ready to Explore?</div>
-              <h2 className="font-display text-4xl sm:text-5xl font-bold text-white mb-4">
-                Your Pakistan<br />Adventure Awaits
-              </h2>
-              <p className="text-emerald-100/70 max-w-lg text-lg">
-                Join thousands of travelers who have discovered the magic of Pakistan. Custom itineraries, expert guides, and memories that last a lifetime.
-              </p>
+      {/* ══════════════════════ CTA BANNER ══════════════════════════ */}
+      <section style={{ background: 'white' }}>
+        <div className="container" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            style={{ background: 'linear-gradient(135deg, #003135 0%, #013d42 50%, #024950 100%)', borderRadius: '24px', overflow: 'hidden', position: 'relative' }}
+          >
+            {/* Decorations */}
+            <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '320px', height: '320px', background: 'rgba(34,165,95,0.2)', borderRadius: '50%', filter: 'blur(60px)' }} />
+            <div style={{ position: 'absolute', bottom: '-60px', left: '-60px', width: '240px', height: '240px', background: 'rgba(212,136,26,0.15)', borderRadius: '50%', filter: 'blur(60px)' }} />
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+
+            <div style={{ position: 'relative', padding: '64px 48px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '40px' }}>
+              <div>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#86efac', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '16px' }}>
+                  <span style={{ width: '18px', height: '2px', background: '#86efac' }} />
+                  Ready to Explore?
+                </div>
+                <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, color: 'white', lineHeight: 1.15, marginBottom: '16px' }}>
+                  Your Pakistan<br />Adventure Awaits
+                </h2>
+                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem', lineHeight: 1.7, maxWidth: '480px' }}>
+                  Join thousands of travelers who have discovered the magic of Pakistan. Custom itineraries, expert guides, and memories that last a lifetime.
+                </p>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flexShrink: 0 }}>
+                <Link to="/packages" className="btn-amber" style={{ fontSize: '0.95rem', padding: '14px 32px' }}>
+                  Browse Packages <ArrowRight size={18} />
+                </Link>
+                <Link to="/contact" className="btn-outline-white" style={{ fontSize: '0.95rem', padding: '14px 32px', justifyContent: 'center' }}>
+                  Contact Us
+                </Link>
+              </div>
             </div>
-            <div className="flex flex-col gap-3 flex-shrink-0">
-              <Link to="/packages" className="btn-gold text-base py-4 px-8">
-                Browse Packages <ArrowRight size={18} />
-              </Link>
-              <Link to="/contact" className="btn-secondary text-base py-4 px-8 justify-center border-white/20 text-white hover:bg-white/10">
-                Contact Us
-              </Link>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </section>
+
     </PageWrapper>
   );
 }

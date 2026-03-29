@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, User, Calendar, Tag, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Tag, ArrowRight } from 'lucide-react';
 import { blogPosts } from '../data';
 
 function PageWrapper({ children }) {
@@ -19,9 +19,9 @@ export default function BlogPost() {
   if (!post) {
     return (
       <PageWrapper>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-white text-2xl font-bold mb-4">Article Not Found</h2>
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb' }}>
+          <div style={{ textAlign: 'center' }}>
+            <h2 style={{ color: '#111827', fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>Article Not Found</h2>
             <Link to="/blog" className="btn-primary">Back to Blog</Link>
           </div>
         </div>
@@ -31,77 +31,92 @@ export default function BlogPost() {
 
   return (
     <PageWrapper>
-      {/* Hero */}
-      <section className="relative h-[55vh] min-h-[400px] overflow-hidden">
-        <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(8,14,28,0.3), rgba(8,14,28,0.92))' }} />
-        <div className="absolute top-24 left-0 right-0 px-4 sm:px-8 max-w-4xl mx-auto">
-          <Link to="/blog" className="flex items-center gap-2 text-white/70 hover:text-white text-sm transition-colors">
+      {/* ── Hero ── */}
+      <section style={{ position: 'relative', height: 'clamp(380px, 55vh, 520px)', overflow: 'hidden' }}>
+        <img src={post.image} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,49,53,0.25) 0%, rgba(0,49,53,0.88) 100%)' }} />
+
+        {/* Back nav */}
+        <div className="container" style={{ position: 'absolute', top: '96px', left: '50%', transform: 'translateX(-50%)', width: '100%' }}>
+          <Link to="/blog" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.75)', fontSize: '0.875rem', textDecoration: 'none', transition: 'color 0.2s' }}
+            onMouseEnter={e => e.currentTarget.style.color = 'white'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.75)'}
+          >
             <ArrowLeft size={15} /> Back to Blog
           </Link>
         </div>
-        <div className="absolute bottom-0 px-4 sm:px-8 pb-10 max-w-4xl mx-auto left-0 right-0">
-          <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
-            <span className="badge badge-emerald mb-4">{post.category}</span>
-            <h1 className="font-display text-3xl sm:text-5xl font-bold text-white mb-4 leading-tight">{post.title}</h1>
-            <div className="flex flex-wrap items-center gap-5 text-sm text-gray-300">
-              <div className="flex items-center gap-2">
-                <img src={post.authorImage} alt={post.author} className="w-8 h-8 rounded-full object-cover" />
-                <span>{post.author}</span>
+
+        {/* Title */}
+        <div className="container" style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', paddingBottom: '40px' }}>
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
+            <span style={{ display: 'inline-block', background: '#024950', color: 'white', fontSize: '0.72rem', fontWeight: 700, padding: '4px 12px', borderRadius: '100px', marginBottom: '12px', letterSpacing: '0.04em' }}>{post.category}</span>
+            <h1 className="font-display" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.8rem)', fontWeight: 800, color: 'white', marginBottom: '16px', lineHeight: 1.2, maxWidth: '800px' }}>{post.title}</h1>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <img src={post.authorImage} alt={post.author} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(255,255,255,0.4)' }} />
+                <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 500 }}>{post.author}</span>
               </div>
-              <span className="flex items-center gap-1.5"><Calendar size={13} />{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-              <span className="flex items-center gap-1.5"><Clock size={13} />{post.readTime}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(255,255,255,0.65)', fontSize: '0.82rem' }}>
+                <Calendar size={13} />{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(255,255,255,0.65)', fontSize: '0.82rem' }}>
+                <Clock size={13} />{post.readTime}
+              </span>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Content */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
-          <p className="text-gray-300 text-xl leading-relaxed mb-8 font-medium border-l-4 border-emerald-500 pl-5 italic">
-            {post.excerpt}
-          </p>
+      {/* ── Content ── */}
+      <section style={{ background: 'white' }}>
+        <div className="container" style={{ paddingTop: '56px', paddingBottom: '56px', maxWidth: '860px' }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
+            <p style={{ color: '#374151', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: '32px', fontWeight: 500, paddingLeft: '20px', borderLeft: '4px solid #024950', fontStyle: 'italic' }}>
+              {post.excerpt}
+            </p>
+            <div>
+              {post.content.split('\n\n').map((para, i) => (
+                para.startsWith('**') && para.endsWith('**')
+                  ? <h3 key={i} className="font-display" style={{ fontSize: '1.4rem', fontWeight: 700, color: '#111827', marginTop: '36px', marginBottom: '16px' }}>{para.replace(/\*\*/g, '')}</h3>
+                  : <p key={i} style={{ color: '#4b5563', lineHeight: 1.8, marginBottom: '20px', fontSize: '1rem' }}>{para}</p>
+              ))}
+            </div>
 
-          <div className="prose prose-invert max-w-none">
-            {post.content.split('\n\n').map((para, i) => (
-              para.startsWith('**') && para.endsWith('**')
-                ? <h3 key={i} className="font-display text-2xl font-bold text-white mt-10 mb-4">{para.replace(/\*\*/g, '')}</h3>
-                : <p key={i} className="text-gray-400 leading-relaxed mb-5 text-base">{para}</p>
-            ))}
-          </div>
-
-          {/* Tags */}
-          <div className="mt-12 pt-8 border-t border-[#1e2d4a] flex flex-wrap items-center gap-3">
-            <span className="text-gray-400 text-sm flex items-center gap-1.5"><Tag size={14} />Tags:</span>
-            {post.tags.map(tag => (
-              <span key={tag} className="badge badge-blue">{tag}</span>
-            ))}
-          </div>
-        </motion.div>
+            {/* Tags */}
+            <div style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid #e5e7eb', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#6b7280', fontSize: '0.875rem' }}><Tag size={14} /> Tags:</span>
+              {post.tags.map(tag => (
+                <span key={tag} className="badge badge-green" style={{ fontSize: '0.78rem' }}>{tag}</span>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </section>
 
-      {/* Related Posts */}
-      <section className="pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <h3 className="text-white font-bold text-2xl mb-8">More Articles</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {related.map((p, i) => (
-            <motion.div key={p.id} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <Link to={`/blog/${p.slug}`}>
-                <div className="destination-card group">
-                  <div className="relative h-44 overflow-hidden">
-                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
-                    <div className="card-overlay" />
-                    <div className="absolute top-3 left-3"><span className="badge badge-emerald text-xs">{p.category}</span></div>
+      {/* ── Related posts ── */}
+      <section style={{ background: '#f9fafb' }}>
+        <div className="container section">
+          <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#111827', marginBottom: '28px' }}>More Articles</h3>
+          <div className="grid-3">
+            {related.map((p, i) => (
+              <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                <Link to={`/blog/${p.slug}`} style={{ display: 'block', textDecoration: 'none' }}>
+                  <div className="destination-card">
+                    <div style={{ position: 'relative', height: '170px', overflow: 'hidden' }}>
+                      <img src={p.image} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                      <div className="card-overlay" style={{ position: 'absolute', inset: 0 }} />
+                      <div style={{ position: 'absolute', top: '10px', left: '10px' }}>
+                        <span style={{ background: 'rgba(255,255,255,0.9)', color: '#024950', fontSize: '0.7rem', fontWeight: 600, padding: '3px 8px', borderRadius: '100px' }}>{p.category}</span>
+                      </div>
+                    </div>
+                    <div style={{ padding: '14px 16px 16px', background: 'white' }}>
+                      <h4 style={{ fontWeight: 700, fontSize: '0.9rem', color: '#111827', lineHeight: 1.4, marginBottom: '8px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.title}</h4>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#024950', fontSize: '0.8rem', fontWeight: 600 }}>Read More <ArrowRight size={12} /></span>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <h4 className="text-white font-bold text-sm leading-snug mb-1 group-hover:text-emerald-400 transition-colors line-clamp-2">{p.title}</h4>
-                    <span className="flex items-center gap-1 text-emerald-400 text-xs font-semibold mt-2">Read More <ArrowRight size={11} /></span>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
     </PageWrapper>

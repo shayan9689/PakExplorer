@@ -1,72 +1,69 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { MapPin, Star, Clock, ArrowRight } from 'lucide-react';
 
 export default function DestinationCard({ destination, index = 0 }) {
-  const { name, slug, shortDescription, image, location, bestTimeToVisit, rating, reviews, category, difficulty } = destination;
-
-  const difficultyColor = {
-    Easy: 'badge-emerald',
-    Moderate: 'badge-gold',
-    Challenging: 'badge-blue',
-  }[difficulty] || 'badge-emerald';
+  const { name, image, location, rating, reviews, bestTimeToVisit, category, difficulty, slug, tagline } = destination;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: Math.min(index * 0.08, 0.4) }}
+      style={{ height: '100%' }}
     >
-      <Link to={`/destinations/${slug}`}>
-        <div className="destination-card group h-full flex flex-col">
+      <Link to={`/destinations/${slug}`} style={{ display: 'block', textDecoration: 'none', height: '100%' }}>
+        <div className="destination-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Image */}
-          <div className="relative overflow-hidden" style={{ height: '240px' }}>
+          <div style={{ position: 'relative', overflow: 'hidden', height: '220px' }}>
             <img
               src={image}
               alt={name}
               loading="lazy"
-              className="w-full h-full object-cover"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
             />
-            <div className="card-overlay" />
+            <div className="card-overlay" style={{ position: 'absolute', inset: 0 }} />
 
-            {/* Badges on image */}
-            <div className="absolute top-4 left-4 flex gap-2">
-              <span className={`badge ${difficultyColor} text-xs`}>{difficulty}</span>
-            </div>
-            <div className="absolute top-4 right-4">
-              <span className="badge badge-gold text-xs">{category}</span>
+            {/* Top badges */}
+            <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <span className="badge badge-green" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(8px)', color: '#024950' }}>
+                {category}
+              </span>
+              <span className="badge badge-amber" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(8px)', color: '#964734' }}>
+                {difficulty}
+              </span>
             </div>
 
-            {/* Rating overlay */}
-            <div className="absolute bottom-4 left-4 flex items-center gap-1.5">
-              <Star size={13} className="text-yellow-400 fill-yellow-400" />
-              <span className="text-white text-sm font-bold">{rating}</span>
-              <span className="text-gray-300 text-xs">({reviews.toLocaleString()})</span>
+            {/* Bottom info overlay */}
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '12px 14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Star size={13} color="#964734" fill="#964734" />
+                <span style={{ color: 'white', fontSize: '0.82rem', fontWeight: 600 }}>{rating}</span>
+                <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.77rem' }}>({reviews?.toLocaleString()})</span>
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-5 flex flex-col flex-1">
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <h3 className="text-white font-bold text-lg leading-tight group-hover:text-emerald-400 transition-colors">
-                {name}
-              </h3>
-            </div>
+          <div style={{ padding: '16px 18px 18px', background: 'white', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#111827', marginBottom: '4px', lineHeight: 1.3 }}>{name}</h3>
+            <p style={{ color: '#6b7280', fontSize: '0.82rem', marginBottom: '10px', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{tagline}</p>
 
-            <div className="flex items-center gap-1.5 mb-3">
-              <MapPin size={13} className="text-emerald-400 flex-shrink-0" />
-              <span className="text-gray-400 text-sm">{location}</span>
-            </div>
-
-            <p className="text-gray-400 text-sm leading-relaxed mb-4 flex-1">{shortDescription}</p>
-
-            <div className="flex items-center justify-between pt-3 border-t border-[#1e2d4a]">
-              <div className="flex items-center gap-1.5 text-gray-500 text-xs">
-                <Clock size={12} />
-                <span>{bestTimeToVisit}</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid #f3f4f6' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#6b7280', fontSize: '0.8rem' }}>
+                <MapPin size={13} color="#024950" />
+                {location}
               </div>
-              <span className="flex items-center gap-1 text-emerald-400 text-sm font-semibold group-hover:gap-2 transition-all">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#6b7280', fontSize: '0.8rem' }}>
+                <Clock size={12} color="#9ca3af" />
+                {bestTimeToVisit?.split(' ')[0]}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 'auto', paddingTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.82rem', color: '#9ca3af' }}>Best time: {bestTimeToVisit}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#024950', fontSize: '0.82rem', fontWeight: 600 }}>
                 Explore <ArrowRight size={13} />
               </span>
             </div>

@@ -1,7 +1,20 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react';
-import { useState } from 'react';
+import { X, Mail, Lock, User, Eye, EyeOff, ArrowRight, MapPin, Shield, Star } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+
+const inputStyle = {
+  width: '100%',
+  padding: '13px 16px 13px 44px',
+  background: '#f8faf9',
+  border: '1.5px solid #e5e7eb',
+  borderRadius: '10px',
+  color: '#111827',
+  fontSize: '0.9rem',
+  fontFamily: 'Inter, sans-serif',
+  outline: 'none',
+  transition: 'border-color 0.25s, box-shadow 0.25s, background 0.25s',
+};
 
 export default function AuthModal() {
   const { showAuthModal, authMode, closeAuth, login } = useAuth();
@@ -9,10 +22,12 @@ export default function AuthModal() {
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [focused, setFocused] = useState('');
 
-  // Sync mode with context
-  if (authMode !== mode && showAuthModal) setMode(authMode);
-
+  // Sync mode with context when modal opens or authMode updates externally
+  useEffect(() => {
+    if (showAuthModal) setMode(authMode);
+  }, [showAuthModal, authMode]);
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -22,6 +37,13 @@ export default function AuthModal() {
       setForm({ name: '', email: '', password: '' });
     }, 1000);
   };
+
+  const fieldStyle = (name) => ({
+    ...inputStyle,
+    borderColor: focused === name ? '#024950' : '#e5e7eb',
+    boxShadow: focused === name ? '0 0 0 3px rgba(26,122,74,0.12)' : 'none',
+    background: focused === name ? '#f0fdf4' : '#f8faf9',
+  });
 
   return (
     <AnimatePresence>
@@ -33,113 +55,112 @@ export default function AuthModal() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeAuth}
-            className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm"
+            style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,49,53,0.65)', backdropFilter: 'blur(8px)' }}
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            initial={{ opacity: 0, scale: 0.92, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 20 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed inset-0 z-[101] flex items-center justify-center p-4"
+            exit={{ opacity: 0, scale: 0.92, y: 24 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ position: 'fixed', inset: 0, zIndex: 101, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
           >
-            <div className="glass w-full max-w-md rounded-2xl p-8 relative shadow-2xl" style={{ border: '1px solid rgba(10,102,64,0.3)' }}>
-              {/* Close */}
-              <button onClick={closeAuth} className="absolute top-4 right-4 w-8 h-8 rounded-full glass-light flex items-center justify-center text-gray-400 hover:text-white transition-colors">
-                <X size={16} />
-              </button>
+            <div style={{ width: '100%', maxWidth: '440px', background: 'white', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 32px 80px rgba(0,0,0,0.22)', position: 'relative' }}>
 
-              {/* Header */}
-              <div className="text-center mb-8">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-500 flex items-center justify-center mx-auto mb-4">
-                  <User size={24} className="text-white" />
+              {/* Gradient header */}
+              <div style={{ background: 'linear-gradient(135deg, #003135 0%, #013d42 50%, #024950 100%)', padding: '32px 32px 40px', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
+                {/* Decorative circles */}
+                <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '160px', height: '160px', background: 'rgba(34,165,95,0.2)', borderRadius: '50%', filter: 'blur(30px)' }} />
+                <div style={{ position: 'absolute', bottom: '-30px', left: '-30px', width: '120px', height: '120px', background: 'rgba(212,136,26,0.2)', borderRadius: '50%', filter: 'blur(24px)' }} />
+                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+
+                {/* Close button */}
+                <button onClick={closeAuth} style={{ position: 'absolute', top: '14px', right: '14px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.15)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', transition: 'all 0.2s', zIndex: 10 }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.25)'; e.currentTarget.style.color = 'white'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+                >
+                  <X size={15} />
+                </button>
+
+                {/* Logo icon */}
+                <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '60px', height: '60px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', border: '1.5px solid rgba(255,255,255,0.25)', borderRadius: '18px', marginBottom: '14px', boxShadow: '0 8px 24px rgba(0,0,0,0.15)' }}>
+                  <MapPin size={26} color="white" />
+                  <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 2 }} style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '18px', border: '1.5px solid rgba(255,255,255,0.2)' }} />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-1">
-                  {mode === 'login' ? 'Welcome Back' : 'Create Account'}
-                </h2>
-                <p className="text-gray-400 text-sm">
-                  {mode === 'login' ? 'Sign in to book your dream Pakistan adventure' : 'Join 50,000+ Pakistan travelers today'}
-                </p>
+
+                <AnimatePresence mode="wait">
+                  <motion.div key={mode} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '6px', fontFamily: "'Inter', sans-serif" }}>
+                      {mode === 'login' ? 'Welcome Back!' : 'Join PakExplorer'}
+                    </h2>
+                    <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                      {mode === 'login' ? 'Sign in to book your dream Pakistan adventure' : 'Join 50,000+ Pakistan travelers today — it\'s free!'}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {mode === 'signup' && (
-                  <div className="relative">
-                    <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Full name"
-                      value={form.name}
-                      onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                      className="input-dark pl-11"
-                      required
-                    />
+              {/* Form section */}
+              <div style={{ padding: '28px 32px 32px' }}>
+                <form onSubmit={handleSubmit}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+                    {mode === 'signup' && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ position: 'relative' }}>
+                        <User size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'name' ? '#024950' : '#9ca3af' }} />
+                        <input type="text" placeholder="Full name" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={fieldStyle('name')} onFocus={() => setFocused('name')} onBlur={() => setFocused('')} required />
+                      </motion.div>
+                    )}
+
+                    <div style={{ position: 'relative' }}>
+                      <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'email' ? '#024950' : '#9ca3af' }} />
+                      <input type="email" placeholder="Email address" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={fieldStyle('email')} onFocus={() => setFocused('email')} onBlur={() => setFocused('')} required />
+                    </div>
+
+                    <div style={{ position: 'relative' }}>
+                      <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'pass' ? '#024950' : '#9ca3af' }} />
+                      <input type={showPass ? 'text' : 'password'} placeholder="Password (min 6 chars)" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} style={{ ...fieldStyle('pass'), paddingRight: '44px' }} onFocus={() => setFocused('pass')} onBlur={() => setFocused('')} required minLength={6} />
+                      <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex' }}>
+                        {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
-                )}
-                <div className="relative">
-                  <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="email"
-                    placeholder="Email address"
-                    value={form.email}
-                    onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-                    className="input-dark pl-11"
-                    required
-                  />
-                </div>
-                <div className="relative">
-                  <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type={showPass ? 'text' : 'password'}
-                    placeholder="Password"
-                    value={form.password}
-                    onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
-                    className="input-dark pl-11 pr-12"
-                    required
-                    minLength={6}
-                  />
-                  <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors">
-                    {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+
+                  <button type="submit" disabled={loading} style={{ width: '100%', marginTop: '20px', padding: '14px', background: loading ? '#6b7280' : 'linear-gradient(135deg, #024950 0%, #0FA4AF 100%)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 700, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: loading ? 'none' : '0 4px 16px rgba(26,122,74,0.35)', transition: 'all 0.25s', fontFamily: 'Inter, sans-serif' }}
+                    onMouseEnter={e => { if (!loading) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(26,122,74,0.4)'; } }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = loading ? 'none' : '0 4px 16px rgba(26,122,74,0.35)'; }}
+                  >
+                    {loading ? (
+                      <>
+                        <div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                        Please wait...
+                      </>
+                    ) : (
+                      <>
+                        {mode === 'login' ? 'Sign In' : 'Create Free Account'}
+                        <ArrowRight size={16} />
+                      </>
+                    )}
                   </button>
+                </form>
+
+                {/* Toggle mode */}
+                <p style={{ textAlign: 'center', color: '#6b7280', fontSize: '0.875rem', marginTop: '20px' }}>
+                  {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+                  <button onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} style={{ color: '#024950', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', fontFamily: 'Inter, sans-serif', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                    {mode === 'login' ? 'Sign up free' : 'Sign in'}
+                  </button>
+                </p>
+
+                {/* Trust badges */}
+                <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
+                  {[{ icon: Shield, text: 'SSL Secure' }, { icon: Star, text: '4.9/5 Rating' }, { icon: MapPin, text: '50K+ Travelers' }].map(({ icon: Icon, text }) => (
+                    <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#9ca3af', fontSize: '0.72rem', fontWeight: 500 }}>
+                      <Icon size={12} color="#024950" />{text}
+                    </div>
+                  ))}
                 </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn-primary w-full justify-center py-3.5 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <span className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Please wait...
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      {mode === 'login' ? 'Sign In' : 'Create Account'}
-                      <ArrowRight size={16} />
-                    </span>
-                  )}
-                </button>
-              </form>
-
-              {/* Toggle */}
-              <p className="text-center text-gray-400 text-sm mt-6">
-                {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-                <button
-                  onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-                  className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors"
-                >
-                  {mode === 'login' ? 'Sign up free' : 'Sign in'}
-                </button>
-              </p>
-
-              {/* Social proof */}
-              <div className="mt-6 pt-6 border-t border-[#1e2d4a] flex items-center justify-center gap-6 text-xs text-gray-500">
-                <span>🔒 SSL Encrypted</span>
-                <span>✓ No spam</span>
-                <span>⭐ 4.9/5 Rating</span>
               </div>
             </div>
           </motion.div>

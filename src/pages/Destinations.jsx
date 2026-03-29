@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, X, MapPin, SlidersHorizontal } from 'lucide-react';
+import { Search, X, SlidersHorizontal, MapPin } from 'lucide-react';
 import { destinations, regions, categories } from '../data';
 import DestinationCard from '../components/DestinationCard';
 
 function PageWrapper({ children }) {
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
       {children}
     </motion.div>
   );
@@ -31,128 +31,91 @@ export default function Destinations() {
 
   return (
     <PageWrapper>
-      {/* Header Hero */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1611821824288-95e977eab064?w=1920&q=85" alt="Pakistan" className="w-full h-full object-cover opacity-20" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(8,14,28,0.6), rgba(8,14,28,1))' }} />
+      {/* ── Hero ── */}
+      <section className="page-hero" style={{ background: 'linear-gradient(135deg, #003135 0%, #013d42 60%, #024950 100%)' }}>
+        <div style={{ position: 'absolute', inset: 0 }}>
+          <img src="/condor-wei-HKUOwPiO4z0-unsplash.jpg" alt="Pakistan" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,49,53,0.4), rgba(0,49,53,0.85))' }} />
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="section-label justify-center">Explore Pakistan</div>
-            <h1 className="font-display text-5xl sm:text-6xl font-bold text-white mb-5">
-              All <span className="gradient-text-gold">Destinations</span>
+        <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
+          <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#86efac', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '16px' }}>
+              <span style={{ width: '18px', height: '2px', background: '#86efac' }} />
+              Explore Pakistan
+            </div>
+            <h1 className="font-display" style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: 800, color: 'white', marginBottom: '16px', lineHeight: 1.1 }}>
+              All <span style={{ background: 'linear-gradient(135deg, #964734, #b05742)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Destinations</span>
             </h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Discover {destinations.length}+ extraordinary destinations — from glacial peaks to Mughal palaces, Arabian beaches to ancient ruins.
+            <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1rem', maxWidth: '560px', margin: '0 auto 32px', lineHeight: 1.7 }}>
+              Discover {destinations.length}+ extraordinary destinations — from glacial peaks to Mughal palaces.
             </p>
-          </motion.div>
-
-          {/* Search Bar */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }} className="mt-10 max-w-xl mx-auto">
-            <div className="relative">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Search destinations..."
-                className="input-dark pl-12 py-4 w-full glass"
-              />
-              {search && (
-                <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
-                  <X size={16} />
-                </button>
-              )}
+            {/* Search */}
+            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+              <div style={{ position: 'relative', background: 'white', borderRadius: '12px', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center' }}>
+                <Search size={18} style={{ position: 'absolute', left: '16px', color: '#9ca3af' }} />
+                <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search mountains, cities, valleys..." style={{ flex: 1, padding: '16px 16px 16px 46px', background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', color: '#111827' }} />
+                {search && <button onClick={() => setSearch('')} style={{ padding: '0 16px', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}><X size={16} /></button>}
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="sticky top-16 z-30 bg-[#080e1c]/90 backdrop-blur-lg border-b border-[#1e2d4a] py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 flex-wrap">
+      {/* ── Filter bar ── */}
+      <div style={{ position: 'sticky', top: '72px', zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e5e7eb', boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+        <div className="container" style={{ paddingTop: '12px', paddingBottom: '12px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${showFilters ? 'bg-emerald-800/40 border-emerald-600 text-white' : 'border-[#1e2d4a] text-gray-400 hover:border-emerald-700 hover:text-white'}`}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: `1.5px solid ${showFilters ? '#024950' : '#e5e7eb'}`, background: showFilters ? '#024950' : 'white', color: showFilters ? 'white' : '#374151', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
             >
               <SlidersHorizontal size={14} />
-              Filters
-              {hasFilters && <span className="w-2 h-2 bg-emerald-400 rounded-full" />}
+              Filters {hasFilters && <span style={{ width: '7px', height: '7px', background: '#b05742', borderRadius: '50%', display: 'inline-block' }} />}
             </button>
 
-            {/* Region Pills */}
-            <div className="flex gap-2 flex-wrap">
-              {regions.map(r => (
-                <button
-                  key={r}
-                  onClick={() => setRegion(r)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${region === r ? 'bg-emerald-700 text-white' : 'text-gray-400 hover:text-white border border-[#1e2d4a] hover:border-emerald-700'}`}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
+            {regions.map(r => (
+              <button key={r} onClick={() => setRegion(r)} style={{ padding: '7px 14px', borderRadius: '100px', border: `1.5px solid ${region === r ? '#024950' : '#e5e7eb'}`, background: region === r ? '#024950' : 'white', color: region === r ? 'white' : '#374151', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{r}</button>
+            ))}
 
             {hasFilters && (
-              <button
-                onClick={() => { setSearch(''); setRegion('All'); setCategory('All'); }}
-                className="flex items-center gap-1 text-sm text-red-400 hover:text-red-300 transition-colors ml-auto"
-              >
-                <X size={13} /> Clear All
+              <button onClick={() => { setSearch(''); setRegion('All'); setCategory('All'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '7px 12px', background: 'none', border: 'none', color: '#ef4444', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', marginLeft: 'auto' }}>
+                <X size={13} /> Clear
               </button>
             )}
 
-            <span className="ml-auto text-gray-500 text-sm hidden md:block">
-              {filtered.length} destination{filtered.length !== 1 ? 's' : ''} found
-            </span>
+            <span style={{ marginLeft: hasFilters ? '0' : 'auto', color: '#9ca3af', fontSize: '0.82rem' }}>{filtered.length} results</span>
           </div>
 
-          {/* Category filters (expandable) */}
+          {/* Category row */}
           {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-4 pt-4 border-t border-[#1e2d4a]"
-            >
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-gray-500 text-xs uppercase tracking-wider mr-2">Category:</span>
-                {categories.map(c => (
-                  <button
-                    key={c}
-                    onClick={() => setCategory(c)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${category === c ? 'bg-gold text-[#080e1c] font-bold' : 'text-gray-400 hover:text-white border border-[#1e2d4a] hover:border-yellow-700'}`}
-                    style={category === c ? { background: '#c9973b' } : {}}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f3f4f6', display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', overflow: 'hidden' }}>
+              <span style={{ color: '#9ca3af', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: '4px' }}>Category:</span>
+              {categories.map(c => (
+                <button key={c} onClick={() => setCategory(c)} style={{ padding: '5px 12px', borderRadius: '100px', border: `1.5px solid ${category === c ? '#964734' : '#e5e7eb'}`, background: category === c ? '#964734' : 'white', color: category === c ? 'white' : '#374151', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{c}</button>
+              ))}
             </motion.div>
           )}
         </div>
-      </section>
+      </div>
 
-      {/* Grid */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {filtered.length === 0 ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24">
-            <MapPin size={48} className="text-gray-600 mx-auto mb-4" />
-            <h3 className="text-white text-xl font-semibold mb-2">No destinations found</h3>
-            <p className="text-gray-400">Try adjusting your search or filters</p>
-            <button onClick={() => { setSearch(''); setRegion('All'); setCategory('All'); }} className="btn-primary mt-6">
-              Clear Filters
-            </button>
-          </motion.div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filtered.map((d, i) => (
-              <DestinationCard key={d.id} destination={d} index={i} />
-            ))}
-          </div>
-        )}
+      {/* ── Grid ── */}
+      <section style={{ background: '#f9fafb' }}>
+        <div className="container section">
+          {filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '80px 0' }}>
+              <MapPin size={48} color="#d1d5db" style={{ margin: '0 auto 16px' }} />
+              <h3 style={{ color: '#374151', fontWeight: 600, fontSize: '1.2rem', marginBottom: '8px' }}>No destinations found</h3>
+              <p style={{ color: '#9ca3af', marginBottom: '24px' }}>Try adjusting your filters</p>
+              <button onClick={() => { setSearch(''); setRegion('All'); setCategory('All'); }} className="btn-primary">Clear All Filters</button>
+            </div>
+          ) : (
+            <div className="grid-4">
+              {filtered.map((d, i) => (
+                <DestinationCard key={d.id} destination={d} index={i} />
+              ))}
+            </div>
+          )}
+        </div>
       </section>
     </PageWrapper>
   );

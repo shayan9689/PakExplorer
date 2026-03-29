@@ -1,115 +1,93 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Share2, Link2, MessageCircle, PlayCircle, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, Mail, ArrowRight, Globe, MessageCircle } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#050c18] border-t border-[#1e2d4a] pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+    <footer style={{ background: '#003135', color: 'white' }}>
+      <div style={{ paddingTop: '40px', paddingBottom: '24px', paddingLeft: 'clamp(16px, 4vw, 40px)', paddingRight: 'clamp(16px, 4vw, 40px)' }}>
 
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-700 to-emerald-500 flex items-center justify-center">
-                <MapPin size={18} className="text-white" />
+        {/* 4-col: Brand | Destinations | Quick Links | Contact */}
+        <div className="footer-grid" style={{ marginBottom: '20px' }}>
+
+          {/* Col 1: Brand */}
+          <div>
+            <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', marginBottom: '10px' }}>
+              <div style={{ width: '30px', height: '30px', borderRadius: '8px', background: 'linear-gradient(135deg,#024950,#0FA4AF)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <MapPin size={14} color="white" />
               </div>
-              <span className="text-white font-bold text-xl">Pak<span className="gradient-text-gold">Explorer</span></span>
+              <span style={{ fontWeight: 800, fontSize: '0.95rem' }}>
+                Pak<span style={{ background: 'linear-gradient(135deg,#964734,#b05742)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Explorer</span>
+              </span>
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Pakistan's premier travel platform, connecting adventurers with the country's most extraordinary destinations since 2018.
+            <p style={{ color: 'rgba(255,255,255,0.38)', fontSize: '0.78rem', lineHeight: 1.65, marginBottom: '12px', maxWidth: '200px' }}>
+              Pakistan's premier travel platform since 2018.
             </p>
-            <div className="flex gap-3">
-              {[Share2, Link2, MessageCircle, PlayCircle].map((Icon, i) => (
-                <a key={i} href="#" className="w-9 h-9 rounded-lg glass-light flex items-center justify-center text-gray-400 hover:text-white hover:bg-emerald-800/40 transition-all">
-                  <Icon size={16} />
+            <div style={{ display: 'flex', gap: '5px' }}>
+              {[Globe, MessageCircle, MapPin].map((Icon, i) => (
+                <a key={i} href="#" style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>
+                  <Icon size={12} />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Destinations */}
+          {/* Col 2: Destinations */}
           <div>
-            <h4 className="text-white font-semibold mb-5">Top Destinations</h4>
-            <ul className="space-y-3">
-              {['Hunza Valley', 'Skardu', 'Swat Valley', 'Naran Kaghan', 'Fairy Meadows', 'Lahore'].map(d => (
-                <li key={d}>
-                  <Link to="/destinations" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-1 group">
-                    <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {d}
-                  </Link>
-                </li>
+            <h4 style={{ fontWeight: 700, fontSize: '0.72rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>Destinations</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {['Hunza Valley','Skardu','Swat Valley','Naran Kaghan','Fairy Meadows','Lahore'].map(d => (
+                <Link key={d} to="/destinations" style={{ color: 'rgba(255,255,255,0.42)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', transition: 'color 0.18s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#0FA4AF'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.42)'}
+                >
+                  <ArrowRight size={10} style={{ flexShrink: 0 }} />{d}
+                </Link>
               ))}
-            </ul>
+            </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Col 3: Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-5">Quick Links</h4>
-            <ul className="space-y-3">
+            <h4 style={{ fontWeight: 700, fontSize: '0.72rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>Quick Links</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[{label:'Tour Packages',path:'/packages'},{label:'Travel Blog',path:'/blog'},{label:'About Us',path:'/about'},{label:'Contact',path:'/contact'},{label:'Privacy Policy',path:'/contact'}].map(item => (
+                <Link key={item.label} to={item.path} style={{ color: 'rgba(255,255,255,0.42)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', transition: 'color 0.18s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#0FA4AF'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.42)'}
+                >
+                  <ArrowRight size={10} style={{ flexShrink: 0 }} />{item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Col 4: Contact */}
+          <div>
+            <h4 style={{ fontWeight: 700, fontSize: '0.72rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>Contact</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
               {[
-                { label: 'Tour Packages', path: '/packages' },
-                { label: 'Travel Blog', path: '/blog' },
-                { label: 'About Us', path: '/about' },
-                { label: 'Contact', path: '/contact' },
-                { label: 'Terms & Conditions', path: '/contact' },
-                { label: 'Privacy Policy', path: '/contact' },
-              ].map(item => (
-                <li key={item.label}>
-                  <Link to={item.path} className="text-gray-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-1 group">
-                    <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {item.label}
-                  </Link>
-                </li>
+                { Icon: MapPin, text: 'DHA Phase 8, Lahore, Pakistan' },
+                { Icon: Phone, text: '+92 310 7679332' },
+                { Icon: Mail, text: 'shayanumair.dev@gmail.com' },
+              ].map(({ Icon, text }) => (
+                <div key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
+                  <Icon size={11} color="#0FA4AF" style={{ marginTop: '2px', flexShrink: 0 }} />
+                  <span style={{ color: 'rgba(255,255,255,0.38)', fontSize: '0.78rem', lineHeight: 1.5 }}>{text}</span>
+                </div>
               ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-white font-semibold mb-5">Get in Touch</h4>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-900/40 border border-emerald-700/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <MapPin size={14} className="text-emerald-400" />
-                </div>
-                <span className="text-gray-400 text-sm">DHA Phase 8, Lahore, Pakistan</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-900/40 border border-emerald-700/30 flex items-center justify-center flex-shrink-0">
-                  <Phone size={14} className="text-emerald-400" />
-                </div>
-                <a href="tel:+923107679332" className="text-gray-400 hover:text-white text-sm transition-colors">+92 310 7679332</a>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-900/40 border border-emerald-700/30 flex items-center justify-center flex-shrink-0">
-                  <Mail size={14} className="text-emerald-400" />
-                </div>
-                <a href="mailto:shayanumair.dev@gmail.com" className="text-gray-400 hover:text-white text-sm transition-colors">shayanumair.dev@gmail.com</a>
-              </div>
-            </div>
-
-            {/* Newsletter */}
-            <div className="mt-6">
-              <p className="text-white text-sm font-medium mb-3">Subscribe to our newsletter</p>
-              <div className="flex gap-2">
-                <input type="email" placeholder="Your email" className="input-dark text-sm py-2.5 flex-1" />
-                <button className="btn-primary py-2.5 px-4 text-sm">
-                  <ArrowRight size={15} />
-                </button>
-              </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-[#1e2d4a] pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">
-            © 2024 PakExplorer. Made with ❤️ for Pakistan's beauty.
-          </p>
-          <div className="flex gap-6">
-            <span className="badge badge-emerald">Trusted Platform</span>
-            <span className="badge badge-gold">50K+ Travelers</span>
+        {/* Bottom bar */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '14px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+          <p style={{ color: 'rgba(255,255,255,0.22)', fontSize: '0.72rem' }}>© 2024 PakExplorer. Made with ❤️ for Pakistan.</p>
+          <div style={{ display: 'flex', gap: '5px' }}>
+            <span style={{ padding: '2px 9px', background: 'rgba(26,122,74,0.18)', border: '1px solid rgba(26,122,74,0.25)', borderRadius: '100px', fontSize: '0.68rem', color: '#0FA4AF', fontWeight: 600 }}>Trusted Platform</span>
+            <span style={{ padding: '2px 9px', background: 'rgba(212,136,26,0.12)', border: '1px solid rgba(212,136,26,0.25)', borderRadius: '100px', fontSize: '0.68rem', color: '#b05742', fontWeight: 600 }}>50K+ Travelers</span>
           </div>
         </div>
+
       </div>
     </footer>
   );
