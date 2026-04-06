@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Eye, EyeOff, ArrowRight, MapPin, Shield, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -21,8 +21,12 @@ const inputStyle = {
 export default function AuthModal() {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const { showAuthModal, authMode, closeAuth, submitCredentials } = useAuth();
+  const { showAuthModal, authMode, authModalKey, closeAuth, submitCredentials } = useAuth();
   const [mode, setMode] = useState(authMode);
+
+  useEffect(() => {
+    setMode(authMode);
+  }, [authModalKey, authMode]);
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
@@ -57,15 +61,15 @@ export default function AuthModal() {
       return;
     }
     setForm({ name: '', email: '', password: '' });
-    if (mode === 'login' && result.firstName != null) {
+    if (result.firstName != null) {
+      setMode('login');
       showToast({
         title: 'Welcome back',
         message: `Successfully logged in as ${result.firstName}.`,
         durationMs: 2000,
         floating: true,
       });
-      navigate('/destinations');
-      window.setTimeout(() => window.location.reload(), 2100);
+      navigate('/destinations', { replace: true });
       return;
     }
   };

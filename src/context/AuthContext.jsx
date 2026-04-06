@@ -100,6 +100,7 @@ export function AuthProvider({ children }) {
           info: 'Check your email for a confirmation link before signing in.',
         };
       }
+      if (data.user) setUser(mapSessionUser(data.user));
       setShowAuthModal(false);
       runPending();
       return { firstName: firstDisplayToken(displayName) };
@@ -110,6 +111,7 @@ export function AuthProvider({ children }) {
       password,
     });
     if (error) return { error: error.message };
+    if (data.user) setUser(mapSessionUser(data.user));
     setShowAuthModal(false);
     runPending();
     const meta = data.user?.user_metadata || {};
