@@ -45,7 +45,15 @@ export default function AuthModal() {
       return;
     }
     if (result.info) {
-      setFormMessage({ type: 'info', text: result.info });
+      setForm({ name: '', email: '', password: '' });
+      setFormMessage({ type: '', text: '' });
+      setMode('login');
+      showToast({
+        title: 'Check your email',
+        message: result.info,
+        durationMs: 2000,
+        floating: true,
+      });
       return;
     }
     setForm({ name: '', email: '', password: '' });
