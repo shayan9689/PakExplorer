@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Clock, Star, ArrowLeft, CheckCircle, Calendar, Users, Compass, ExternalLink, ChevronRight } from 'lucide-react';
 import { destinations } from '../data';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { useState } from 'react';
 
 function PageWrapper({ children }) {
@@ -16,13 +17,14 @@ function PageWrapper({ children }) {
 export default function DestinationDetail() {
   const { slug } = useParams();
   const { user, openAuth } = useAuth();
+  const { showToast } = useToast();
   const [activeImg, setActiveImg] = useState(0);
   const destination = destinations.find(d => d.slug === slug);
 
   if (!destination) {
     return (
       <PageWrapper>
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface-muted)' }}>
           <div style={{ textAlign: 'center' }}>
             <h2 style={{ color: '#111827', fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>Destination Not Found</h2>
             <Link to="/destinations" className="btn-primary">Back to Destinations</Link>
@@ -36,7 +38,11 @@ export default function DestinationDetail() {
 
   const handleBook = () => {
     if (!user) openAuth('login');
-    else alert(`Your inquiry for "${name}" has been received! Our team will contact you within 24 hours.`);
+    else
+      showToast({
+        title: 'Inquiry received',
+        message: `Your inquiry for "${name}" has been received. Our team will contact you within 24 hours.`,
+      });
   };
 
   const related = destinations.filter(d => d.slug !== slug && (d.region === region || d.category === category)).slice(0, 3);
@@ -84,10 +90,20 @@ export default function DestinationDetail() {
 
         {/* Image thumbnails */}
         {images.length > 1 && (
-          <div style={{ position: 'absolute', bottom: '16px', right: '16px', display: 'flex', gap: '6px' }}>
+          <div
+            className="sub-nav-strip sub-nav-chips"
+            style={{
+              position: 'absolute',
+              bottom: '16px',
+              left: '16px',
+              right: '16px',
+              justifyContent: 'flex-end',
+              gap: '6px',
+            }}
+          >
             {images.map((img, i) => (
-              <button key={i} onClick={() => setActiveImg(i)}
-                style={{ width: '52px', height: '40px', borderRadius: '8px', overflow: 'hidden', border: `2px solid ${i === activeImg ? '#86efac' : 'transparent'}`, opacity: i === activeImg ? 1 : 0.6, cursor: 'pointer', padding: 0, transform: i === activeImg ? 'scale(1.1)' : 'scale(1)', transition: 'all 0.2s' }}
+              <button type="button" key={i} onClick={() => setActiveImg(i)}
+                style={{ flexShrink: 0, width: '52px', height: '40px', borderRadius: '8px', overflow: 'hidden', border: `2px solid ${i === activeImg ? '#86efac' : 'transparent'}`, opacity: i === activeImg ? 1 : 0.6, cursor: 'pointer', padding: 0, transform: i === activeImg ? 'scale(1.1)' : 'scale(1)', transition: 'all 0.2s' }}
               >
                 <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </button>
@@ -97,7 +113,7 @@ export default function DestinationDetail() {
       </section>
 
       {/* ── Main Content ── */}
-      <section style={{ background: '#f9fafb' }}>
+      <section style={{ background: 'var(--surface-muted)' }}>
         <div className="container section">
           <div id="detail-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '40px', alignItems: 'start' }}>
             <style>{`@media(min-width:1024px){#detail-grid{grid-template-columns:2fr 1fr}}`}</style>
@@ -106,13 +122,13 @@ export default function DestinationDetail() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
 
               {/* About */}
-              <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+              <div style={{ background: 'var(--surface-card)', borderRadius: '16px', padding: '28px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
                 <h2 className="font-display" style={{ fontSize: '1.6rem', fontWeight: 700, color: '#111827', marginBottom: '14px' }}>About {name}</h2>
                 <p style={{ color: '#4b5563', lineHeight: 1.8, fontSize: '1rem' }}>{description}</p>
               </div>
 
               {/* Highlights */}
-              <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+              <div style={{ background: 'var(--surface-card)', borderRadius: '16px', padding: '28px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
                 <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#111827', marginBottom: '18px' }}>Top Highlights</h3>
                 <div id="highlights-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
                   <style>{`@media(min-width:500px){#highlights-grid{grid-template-columns:1fr 1fr}}`}</style>
@@ -128,11 +144,11 @@ export default function DestinationDetail() {
               </div>
 
               {/* Activities */}
-              <div style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+              <div style={{ background: 'var(--surface-card)', borderRadius: '16px', padding: '28px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
                 <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#111827', marginBottom: '14px' }}>Activities</h3>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {activities.map((a, i) => (
-                    <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'white', border: '1.5px solid #e5e7eb', borderRadius: '10px', fontSize: '0.875rem', color: '#374151', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+                    <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'var(--surface-card)', border: '1.5px solid #e5e7eb', borderRadius: '10px', fontSize: '0.875rem', color: '#374151', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
                       <Compass size={13} color="#024950" />{a}
                     </span>
                   ))}
@@ -140,7 +156,7 @@ export default function DestinationDetail() {
               </div>
 
               {/* Travel info grid */}
-              <div style={{ background: 'white', borderRadius: '16px', padding: '24px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+              <div style={{ background: 'var(--surface-card)', borderRadius: '16px', padding: '24px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
                 <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#111827', marginBottom: '14px' }}>Travel Information</h3>
                 <div id="travel-info" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '10px' }}>
                   <style>{`@media(min-width:500px){#travel-info{grid-template-columns:repeat(4,1fr)}}`}</style>
@@ -150,7 +166,7 @@ export default function DestinationDetail() {
                     { icon: Users, label: 'Difficulty', value: difficulty },
                     { icon: MapPin, label: 'Region', value: region },
                   ].map((item, i) => (
-                    <div key={i} style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '14px', textAlign: 'center' }}>
+                    <div key={i} style={{ background: 'var(--surface-muted)', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '14px', textAlign: 'center' }}>
                       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
                         <div style={{ width: '34px', height: '34px', background: '#f0fdf4', border: '1px solid #d1fae5', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <item.icon size={15} color="#024950" />
@@ -177,7 +193,7 @@ export default function DestinationDetail() {
 
               {/* Booking card */}
               <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.6 }}
-                style={{ background: 'white', borderRadius: '20px', padding: '24px', border: '1.5px solid #e5e7eb', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', position: 'sticky', top: '88px' }}
+                style={{ background: 'var(--surface-card)', borderRadius: '20px', padding: '24px', border: '1.5px solid #e5e7eb', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', position: 'sticky', top: '88px' }}
               >
                 {/* Stars */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginBottom: '12px' }}>
@@ -223,7 +239,7 @@ export default function DestinationDetail() {
               </motion.div>
 
               {/* Quick facts */}
-              <div style={{ background: 'white', borderRadius: '16px', padding: '20px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+              <div style={{ background: 'var(--surface-card)', borderRadius: '16px', padding: '20px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                 <h4 style={{ fontWeight: 700, color: '#111827', marginBottom: '14px', fontSize: '0.95rem' }}>Quick Facts</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {[
@@ -244,7 +260,7 @@ export default function DestinationDetail() {
 
       {/* ── Related ── */}
       {related.length > 0 && (
-        <section style={{ background: 'white' }}>
+        <section style={{ background: 'var(--surface-card)' }}>
           <div className="container section">
             <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#111827', marginBottom: '28px' }}>Similar Destinations</h3>
             <div className="grid-3">

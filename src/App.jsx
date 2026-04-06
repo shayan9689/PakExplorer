@@ -11,8 +11,16 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
 import AuthModal from './components/AuthModal';
+import ProtectedRoute from './components/ProtectedRoute';
+
+function AuthModalGate() {
+  const { authModalKey } = useAuth();
+  return <AuthModal key={authModalKey} />;
+}
 import ScrollToTop from './components/ScrollToTop';
 
 function AnimatedRoutes() {
@@ -21,14 +29,14 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
-        <Route path="/destinations" element={<Destinations />} />
-        <Route path="/destinations/:slug" element={<DestinationDetail />} />
-        <Route path="/packages" element={<Packages />} />
-        <Route path="/packages/:slug" element={<PackageDetail />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/destinations" element={<ProtectedRoute><Destinations /></ProtectedRoute>} />
+        <Route path="/destinations/:slug" element={<ProtectedRoute><DestinationDetail /></ProtectedRoute>} />
+        <Route path="/packages" element={<ProtectedRoute><Packages /></ProtectedRoute>} />
+        <Route path="/packages/:slug" element={<ProtectedRoute><PackageDetail /></ProtectedRoute>} />
+        <Route path="/blog" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
+        <Route path="/blog/:slug" element={<ProtectedRoute><BlogPost /></ProtectedRoute>} />
+        <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
+        <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
       </Routes>
     </AnimatePresence>
   );
@@ -37,13 +45,17 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <ScrollToTop />
-        <Navbar />
-        <AnimatedRoutes />
-        <Footer />
-        <AuthModal />
-      </AuthProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <ScrollToTop />
+            <Navbar />
+            <AnimatedRoutes />
+            <Footer />
+            <AuthModalGate />
+          </AuthProvider>
+        </ToastProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

@@ -19,7 +19,7 @@ export default function BlogPost() {
   if (!post) {
     return (
       <PageWrapper>
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface-muted)' }}>
           <div style={{ textAlign: 'center' }}>
             <h2 style={{ color: '#111827', fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>Article Not Found</h2>
             <Link to="/blog" className="btn-primary">Back to Blog</Link>
@@ -67,7 +67,7 @@ export default function BlogPost() {
       </section>
 
       {/* ── Content ── */}
-      <section style={{ background: 'white' }}>
+      <section style={{ background: 'var(--surface-card)' }}>
         <div className="container" style={{ paddingTop: '56px', paddingBottom: '56px', maxWidth: '860px' }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
             <p style={{ color: '#374151', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: '32px', fontWeight: 500, paddingLeft: '20px', borderLeft: '4px solid #024950', fontStyle: 'italic' }}>
@@ -82,18 +82,20 @@ export default function BlogPost() {
             </div>
 
             {/* Tags */}
-            <div style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid #e5e7eb', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#6b7280', fontSize: '0.875rem' }}><Tag size={14} /> Tags:</span>
+            <div className="sub-nav-strip" style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid var(--surface-border)' }}>
+              <div className="sub-nav-chips sub-nav-chips--wrap-xl" style={{ gap: '8px' }}>
+              <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontSize: '0.875rem' }}><Tag size={14} /> Tags:</span>
               {post.tags.map(tag => (
-                <span key={tag} className="badge badge-green" style={{ fontSize: '0.78rem' }}>{tag}</span>
+                <span key={tag} className="badge badge-green" style={{ flexShrink: 0, fontSize: '0.78rem' }}>{tag}</span>
               ))}
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* ── Related posts ── */}
-      <section style={{ background: '#f9fafb' }}>
+      <section style={{ background: 'var(--surface-muted)' }}>
         <div className="container section">
           <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#111827', marginBottom: '28px' }}>More Articles</h3>
           <div className="grid-3">
@@ -108,7 +110,7 @@ export default function BlogPost() {
                         <span style={{ background: 'rgba(255,255,255,0.9)', color: '#024950', fontSize: '0.7rem', fontWeight: 600, padding: '3px 8px', borderRadius: '100px' }}>{p.category}</span>
                       </div>
                     </div>
-                    <div style={{ padding: '14px 16px 16px', background: 'white' }}>
+                    <div style={{ padding: '14px 16px 16px', background: 'var(--surface-card)' }}>
                       <h4 style={{ fontWeight: 700, fontSize: '0.9rem', color: '#111827', lineHeight: 1.4, marginBottom: '8px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.title}</h4>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#024950', fontSize: '0.8rem', fontWeight: 600 }}>Read More <ArrowRight size={12} /></span>
                     </div>

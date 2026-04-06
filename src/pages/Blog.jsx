@@ -48,7 +48,7 @@ export default function Blog() {
               Expert guides, traveler stories, and insider tips to help you explore Pakistan like a pro.
             </p>
             <div style={{ maxWidth: '480px', margin: '0 auto' }}>
-              <div style={{ position: 'relative', background: 'white', borderRadius: '12px', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center' }}>
+              <div style={{ position: 'relative', background: 'var(--surface-card)', borderRadius: '12px', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center' }}>
                 <Search size={18} style={{ position: 'absolute', left: '16px', color: '#9ca3af' }} />
                 <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search articles..."
                   style={{ flex: 1, padding: '15px 16px 15px 46px', background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', color: '#111827' }} />
@@ -60,18 +60,20 @@ export default function Blog() {
       </section>
 
       {/* ── Category filter ── */}
-      <div style={{ position: 'sticky', top: '72px', zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e5e7eb', boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
-        <div className="container" style={{ paddingTop: '12px', paddingBottom: '12px', display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+      <div className="sub-nav-strip" style={{ position: 'sticky', top: '72px', zIndex: 40, background: 'var(--nav-scrolled-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--surface-border)', boxShadow: 'var(--shadow-header)' }}>
+        <div className="container" style={{ paddingTop: '12px', paddingBottom: '12px' }}>
+          <div className="sub-nav-chips sub-nav-chips--wrap-xl" style={{ gap: '6px' }}>
           {blogCategories.map(c => (
-            <button key={c} onClick={() => setCatFilter(c)} style={{ padding: '7px 14px', borderRadius: '100px', border: `1.5px solid ${catFilter === c ? '#6d28d9' : '#e5e7eb'}`, background: catFilter === c ? '#6d28d9' : 'white', color: catFilter === c ? 'white' : '#374151', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{c}</button>
+            <button type="button" key={c} onClick={() => setCatFilter(c)} style={{ flexShrink: 0, padding: '7px 14px', borderRadius: '100px', border: `1.5px solid ${catFilter === c ? '#6d28d9' : 'var(--surface-border)'}`, background: catFilter === c ? '#6d28d9' : 'var(--surface-card)', color: catFilter === c ? 'white' : 'var(--text-body)', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{c}</button>
           ))}
-          <span style={{ marginLeft: 'auto', color: '#9ca3af', fontSize: '0.82rem' }}>{filtered.length} articles</span>
+          <span style={{ flexShrink: 0, marginLeft: 'auto', color: 'var(--text-muted-2)', fontSize: '0.82rem' }}>{filtered.length} articles</span>
+          </div>
         </div>
       </div>
 
       {/* ── Featured post ── */}
       {catFilter === 'All' && !search && (
-        <section style={{ background: '#f9fafb' }}>
+        <section style={{ background: 'var(--surface-muted)' }}>
           <div className="container" style={{ paddingTop: '48px', paddingBottom: '0' }}>
             <Link to={`/blog/${featured.slug}`} style={{ display: 'block', textDecoration: 'none' }}>
               <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -109,7 +111,7 @@ export default function Blog() {
       )}
 
       {/* ── Blog Grid ── */}
-      <section style={{ background: '#f9fafb' }}>
+      <section style={{ background: 'var(--surface-muted)' }}>
         <div className="container section">
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 0' }}>
@@ -132,7 +134,7 @@ export default function Blog() {
                           <Clock size={11} />{post.readTime}
                         </div>
                       </div>
-                      <div style={{ padding: '18px 20px 20px', background: 'white', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ padding: '18px 20px 20px', background: 'var(--surface-card)', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                         <h3 style={{ fontWeight: 700, fontSize: '1rem', color: '#111827', marginBottom: '8px', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{post.title}</h3>
                         <p style={{ color: '#6b7280', fontSize: '0.85rem', lineHeight: 1.6, flexGrow: 1, marginBottom: '14px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{post.excerpt}</p>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #f3f4f6' }}>

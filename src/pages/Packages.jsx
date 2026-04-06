@@ -56,7 +56,7 @@ export default function Packages() {
               All-inclusive, expertly curated packages for every type of traveler — from adrenaline-seekers to culture enthusiasts.
             </p>
             <div style={{ maxWidth: '480px', margin: '0 auto' }}>
-              <div style={{ position: 'relative', background: 'white', borderRadius: '12px', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center' }}>
+              <div style={{ position: 'relative', background: 'var(--surface-card)', borderRadius: '12px', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center' }}>
                 <Search size={18} style={{ position: 'absolute', left: '16px', color: '#9ca3af' }} />
                 <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search packages or destinations..."
                   style={{ flex: 1, padding: '15px 16px 15px 46px', background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', color: '#111827' }} />
@@ -68,35 +68,35 @@ export default function Packages() {
       </section>
 
       {/* ── Filters ── */}
-      <div style={{ position: 'sticky', top: '72px', zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e5e7eb', boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+      <div className="sub-nav-strip" style={{ position: 'sticky', top: '72px', zIndex: 40, background: 'var(--nav-scrolled-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--surface-border)', boxShadow: 'var(--shadow-header)' }}>
         <div className="container" style={{ paddingTop: '12px', paddingBottom: '12px' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
-            <button onClick={() => setShowFilters(!showFilters)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: `1.5px solid ${showFilters ? '#024950' : '#e5e7eb'}`, background: showFilters ? '#024950' : 'white', color: showFilters ? 'white' : '#374151', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+          <div className="sub-nav-chips sub-nav-chips--wrap-xl">
+            <button type="button" onClick={() => setShowFilters(!showFilters)} style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: `1.5px solid ${showFilters ? '#024950' : 'var(--surface-border)'}`, background: showFilters ? '#024950' : 'var(--surface-card)', color: showFilters ? 'white' : 'var(--text-body)', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
               <SlidersHorizontal size={14} /> Filters
             </button>
             {pkgCategories.map(c => (
-              <button key={c} onClick={() => setPkgCat(c)} style={{ padding: '7px 14px', borderRadius: '100px', border: `1.5px solid ${pkgCat === c ? '#024950' : '#e5e7eb'}`, background: pkgCat === c ? '#024950' : 'white', color: pkgCat === c ? 'white' : '#374151', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{c}</button>
+              <button type="button" key={c} onClick={() => setPkgCat(c)} style={{ flexShrink: 0, padding: '7px 14px', borderRadius: '100px', border: `1.5px solid ${pkgCat === c ? '#024950' : 'var(--surface-border)'}`, background: pkgCat === c ? '#024950' : 'var(--surface-card)', color: pkgCat === c ? 'white' : 'var(--text-body)', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{c}</button>
             ))}
-            <span style={{ marginLeft: 'auto', color: '#9ca3af', fontSize: '0.82rem' }}>{filtered.length} packages</span>
+            <span style={{ flexShrink: 0, marginLeft: 'auto', color: 'var(--text-muted-2)', fontSize: '0.82rem' }}>{filtered.length} packages</span>
           </div>
 
           {showFilters && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ overflow: 'hidden', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f3f4f6' }}>
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="sub-nav-strip" style={{ overflow: 'hidden', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid var(--surface-border-subtle)' }}>
               <div id="pkg-filter-rows" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
                 <style>{`@media(min-width:640px){#pkg-filter-rows{grid-template-columns:1fr 1fr}}`}</style>
                 <div>
-                  <span style={{ color: '#9ca3af', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '8px' }}>Price Range</span>
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  <span style={{ color: 'var(--text-muted-2)', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '8px' }}>Price Range</span>
+                  <div className="sub-nav-chips sub-nav-chips--wrap-xl" style={{ gap: '6px' }}>
                     {priceRanges.map(r => (
-                      <button key={r} onClick={() => setPriceRange(r)} style={{ padding: '5px 12px', borderRadius: '100px', border: `1.5px solid ${priceRange === r ? '#964734' : '#e5e7eb'}`, background: priceRange === r ? '#964734' : 'white', color: priceRange === r ? 'white' : '#374151', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer' }}>{r}</button>
+                      <button type="button" key={r} onClick={() => setPriceRange(r)} style={{ flexShrink: 0, padding: '5px 12px', borderRadius: '100px', border: `1.5px solid ${priceRange === r ? '#964734' : 'var(--surface-border)'}`, background: priceRange === r ? '#964734' : 'var(--surface-card)', color: priceRange === r ? 'white' : 'var(--text-body)', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer' }}>{r}</button>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <span style={{ color: '#9ca3af', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '8px' }}>Difficulty</span>
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  <span style={{ color: 'var(--text-muted-2)', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '8px' }}>Difficulty</span>
+                  <div className="sub-nav-chips sub-nav-chips--wrap-xl" style={{ gap: '6px' }}>
                     {difficultyLevels.map(r => (
-                      <button key={r} onClick={() => setDifficulty(r)} style={{ padding: '5px 12px', borderRadius: '100px', border: `1.5px solid ${difficulty === r ? '#024950' : '#e5e7eb'}`, background: difficulty === r ? '#024950' : 'white', color: difficulty === r ? 'white' : '#374151', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer' }}>{r}</button>
+                      <button type="button" key={r} onClick={() => setDifficulty(r)} style={{ flexShrink: 0, padding: '5px 12px', borderRadius: '100px', border: `1.5px solid ${difficulty === r ? '#024950' : 'var(--surface-border)'}`, background: difficulty === r ? '#024950' : 'var(--surface-card)', color: difficulty === r ? 'white' : 'var(--text-body)', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer' }}>{r}</button>
                     ))}
                   </div>
                 </div>
@@ -107,7 +107,7 @@ export default function Packages() {
       </div>
 
       {/* ── Grid ── */}
-      <section style={{ background: '#f9fafb' }}>
+      <section style={{ background: 'var(--surface-muted)' }}>
         <div className="container section">
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 0' }}>

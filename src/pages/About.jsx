@@ -57,7 +57,7 @@ export default function About() {
       </section>
 
       {/* ── Stats ── */}
-      <section style={{ background: 'white', borderBottom: '1px solid #f3f4f6' }}>
+      <section style={{ background: 'var(--surface-card)', borderBottom: '1px solid var(--surface-border-subtle)' }}>
         <div className="container section-sm">
           <div id="about-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '32px', textAlign: 'center' }}>
             <style>{`@media(min-width:640px){#about-stats{grid-template-columns:repeat(4,1fr)}}`}</style>
@@ -77,7 +77,7 @@ export default function About() {
       </section>
 
       {/* ── Mission ── */}
-      <section style={{ background: '#f9fafb' }}>
+      <section style={{ background: 'var(--surface-muted)' }}>
         <div className="container section">
           <div id="mission-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '56px', alignItems: 'center' }}>
             <style>{`@media(min-width:1024px){#mission-grid{grid-template-columns:1fr 1fr}}`}</style>
@@ -85,7 +85,7 @@ export default function About() {
             <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
               <div style={{ position: 'relative' }}>
                 <img src="/rohit-tandon-9wg5jCEPBsw-unsplash.jpg" alt="Mission" style={{ width: '100%', height: '340px', objectFit: 'cover', borderRadius: '20px', boxShadow: '0 16px 48px rgba(0,0,0,0.14)' }} />
-                <motion.div animate={{ y: [-4, 4, -4] }} transition={{ repeat: Infinity, duration: 3 }} style={{ position: 'absolute', bottom: '-20px', right: '-12px', background: 'white', padding: '16px 18px', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.14)', border: '1.5px solid #d1fae5', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <motion.div animate={{ y: [-4, 4, -4] }} transition={{ repeat: Infinity, duration: 3 }} style={{ position: 'absolute', bottom: '-20px', right: '-12px', background: 'var(--surface-card)', padding: '16px 18px', borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.14)', border: '1.5px solid #d1fae5', display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ width: '40px', height: '40px', background: 'linear-gradient(135deg, #024950, #0FA4AF)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Zap size={18} color="white" />
                   </div>
@@ -113,7 +113,7 @@ export default function About() {
       </section>
 
       {/* ── Values ── */}
-      <section style={{ background: 'white' }}>
+      <section style={{ background: 'var(--surface-card)' }}>
         <div className="container section">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: '48px' }}>
             <div className="section-label" style={{ justifyContent: 'center' }}>What We Stand For</div>
@@ -122,9 +122,9 @@ export default function About() {
           <div className="grid-2">
             {values.map((v, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                style={{ background: 'white', borderRadius: '16px', padding: '28px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', transition: 'all 0.3s' }}
+                style={{ background: 'var(--surface-card)', borderRadius: '16px', padding: '28px', border: '1.5px solid var(--surface-border)', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', transition: 'all 0.3s' }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = '#d1fae5'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(26,122,74,0.1)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.05)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--surface-border)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.05)'; }}
               >
                 <div style={{ width: '48px', height: '48px', background: '#f0fdf4', border: '1.5px solid #d1fae5', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '18px' }}>
                   <v.icon size={22} color="#024950" />
@@ -138,7 +138,7 @@ export default function About() {
       </section>
 
       {/* ── Team ── */}
-      <section style={{ background: '#f9fafb' }}>
+      <section style={{ background: 'var(--surface-muted)' }}>
         <div className="container section">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: '48px' }}>
             <div className="section-label" style={{ justifyContent: 'center' }}>The People Behind PakExplorer</div>
@@ -147,9 +147,9 @@ export default function About() {
           <div className="grid-4">
             {team.map((member, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                style={{ background: 'white', borderRadius: '16px', padding: '24px', textAlign: 'center', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', transition: 'all 0.3s' }}
+                style={{ background: 'var(--surface-card)', borderRadius: '16px', padding: '24px', textAlign: 'center', border: '1.5px solid var(--surface-border)', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', transition: 'all 0.3s' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = '#d1fae5'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.05)'; e.currentTarget.style.borderColor = '#e5e7eb'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.05)'; e.currentTarget.style.borderColor = 'var(--surface-border)'; }}
               >
                 <div style={{ position: 'relative', width: '80px', height: '80px', margin: '0 auto 14px' }}>
                   <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px', border: '3px solid #d1fae5' }} />
@@ -165,7 +165,7 @@ export default function About() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ background: 'white' }}>
+      <section style={{ background: 'var(--surface-card)' }}>
         <div className="container" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
           <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
             style={{ background: 'linear-gradient(135deg, #003135 0%, #013d42 50%, #024950 100%)', borderRadius: '24px', overflow: 'hidden', position: 'relative', padding: 'clamp(40px, 6vw, 72px) clamp(32px, 5vw, 64px)', textAlign: 'center' }}

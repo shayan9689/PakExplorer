@@ -20,10 +20,10 @@ const contactInfo = [
 const inputStyle = {
   width: '100%',
   padding: '13px 16px',
-  background: '#f9fafb',
-  border: '1.5px solid #e5e7eb',
+  background: 'var(--surface-muted)',
+  border: '1.5px solid var(--surface-border)',
   borderRadius: '10px',
-  color: '#111827',
+  color: 'var(--text-heading)',
   fontSize: '0.9rem',
   fontFamily: 'Inter, sans-serif',
   outline: 'none',
@@ -42,7 +42,7 @@ export default function Contact() {
   };
 
   const handleFocus = e => { e.target.style.borderColor = '#024950'; e.target.style.boxShadow = '0 0 0 3px rgba(26,122,74,0.1)'; };
-  const handleBlur = e => { e.target.style.borderColor = '#e5e7eb'; e.target.style.boxShadow = 'none'; };
+  const handleBlur = e => { e.target.style.borderColor = 'var(--surface-border)'; e.target.style.boxShadow = 'none'; };
 
   return (
     <PageWrapper>
@@ -69,7 +69,7 @@ export default function Contact() {
       </section>
 
       {/* ── Main Content ── */}
-      <section style={{ background: '#f9fafb' }}>
+      <section style={{ background: 'var(--surface-muted)' }}>
         <div className="container section">
           <div id="contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '40px' }}>
             <style>{`@media(min-width:1024px){#contact-grid{grid-template-columns:2fr 3fr}}`}</style>
@@ -84,9 +84,9 @@ export default function Contact() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
                 {contactInfo.map((info, i) => (
                   <motion.div key={i} initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
-                    style={{ display: 'flex', gap: '14px', padding: '16px', background: 'white', borderRadius: '14px', border: '1.5px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', alignItems: 'center', transition: 'all 0.25s' }}
+                    style={{ display: 'flex', gap: '14px', padding: '16px', background: 'var(--surface-card)', borderRadius: '14px', border: '1.5px solid var(--surface-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', alignItems: 'center', transition: 'all 0.25s' }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = '#d1fae5'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(26,122,74,0.1)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--surface-border)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)'; }}
                   >
                     <div style={{ width: '42px', height: '42px', background: '#f0fdf4', border: '1px solid #d1fae5', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <info.icon size={18} color={info.color} />
@@ -100,7 +100,7 @@ export default function Contact() {
               </div>
 
               {/* Map */}
-              <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1.5px solid #e5e7eb', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginBottom: '16px' }}>
+              <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1.5px solid var(--surface-border)', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', marginBottom: '16px' }}>
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d108870.5984856636!2d74.27432675!3d31.48003585!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3919051a8e2ffd91%3A0xe47fd6e8f41069a0!2sDHA%20Phase%208%2C%20Lahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
                   width="100%" height="200" style={{ border: 0, display: 'block' }} allowFullScreen="" loading="lazy" title="PakExplorer Office"
@@ -124,7 +124,7 @@ export default function Contact() {
             <motion.div initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35, duration: 0.6 }}>
               {sent ? (
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                  style={{ background: 'white', borderRadius: '20px', padding: '64px 40px', textAlign: 'center', border: '1.5px solid #d1fae5', boxShadow: '0 8px 40px rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                  style={{ background: 'var(--surface-card)', borderRadius: '20px', padding: '64px 40px', textAlign: 'center', border: '1.5px solid #d1fae5', boxShadow: '0 8px 40px rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
                 >
                   <div style={{ width: '72px', height: '72px', background: '#f0fdf4', border: '2px solid #d1fae5', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
                     <CheckCircle size={32} color="#024950" />
@@ -135,7 +135,7 @@ export default function Contact() {
                   <button onClick={() => { setSent(false); setForm({ name: '', email: '', phone: '', subject: '', message: '' }); }} className="btn-primary">Send Another Message</button>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} style={{ background: 'white', borderRadius: '20px', padding: 'clamp(24px, 5vw, 40px)', border: '1.5px solid #e5e7eb', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
+                <form onSubmit={handleSubmit} style={{ background: 'var(--surface-card)', borderRadius: '20px', padding: 'clamp(24px, 5vw, 40px)', border: '1.5px solid var(--surface-border)', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
                   <h3 className="font-display" style={{ fontSize: '1.6rem', fontWeight: 800, color: '#111827', marginBottom: '6px' }}>Send Us a Message</h3>
                   <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '28px' }}>Fill out the form and we'll get back to you within a few hours.</p>
 

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import GuardedLink from './GuardedLink';
 import { motion } from 'framer-motion';
 import { MapPin, Star, Clock, ArrowRight } from 'lucide-react';
 
@@ -13,7 +13,7 @@ export default function DestinationCard({ destination, index = 0 }) {
       transition={{ duration: 0.5, delay: Math.min(index * 0.08, 0.4) }}
       style={{ height: '100%' }}
     >
-      <Link to={`/destinations/${slug}`} style={{ display: 'block', textDecoration: 'none', height: '100%' }}>
+      <GuardedLink to={`/destinations/${slug}`} style={{ display: 'block', textDecoration: 'none', height: '100%' }}>
         <div className="destination-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Image */}
           <div style={{ position: 'relative', overflow: 'hidden', height: '220px' }}>
@@ -46,30 +46,30 @@ export default function DestinationCard({ destination, index = 0 }) {
           </div>
 
           {/* Content */}
-          <div style={{ padding: '16px 18px 18px', background: 'white', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#111827', marginBottom: '4px', lineHeight: 1.3 }}>{name}</h3>
-            <p style={{ color: '#6b7280', fontSize: '0.82rem', marginBottom: '10px', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{tagline}</p>
+          <div style={{ padding: '16px 18px 18px', background: 'var(--surface-card)', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-heading)', marginBottom: '4px', lineHeight: 1.3 }}>{name}</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginBottom: '10px', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{tagline}</p>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid #f3f4f6' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#6b7280', fontSize: '0.8rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid var(--surface-border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                 <MapPin size={13} color="#024950" />
                 {location}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#6b7280', fontSize: '0.8rem' }}>
-                <Clock size={12} color="#9ca3af" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                <Clock size={12} color="var(--text-muted-2)" />
                 {bestTimeToVisit?.split(' ')[0]}
               </div>
             </div>
 
             <div style={{ marginTop: 'auto', paddingTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.82rem', color: '#9ca3af' }}>Best time: {bestTimeToVisit}</span>
+              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted-2)' }}>Best time: {bestTimeToVisit}</span>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#024950', fontSize: '0.82rem', fontWeight: 600 }}>
                 Explore <ArrowRight size={13} />
               </span>
             </div>
           </div>
         </div>
-      </Link>
+      </GuardedLink>
     </motion.div>
   );
 }

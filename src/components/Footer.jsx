@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import GuardedLink from './GuardedLink';
 import { MapPin, Phone, Mail, ArrowRight, Globe, MessageCircle } from 'lucide-react';
 
 export default function Footer() {
@@ -36,12 +37,12 @@ export default function Footer() {
             <h4 style={{ fontWeight: 700, fontSize: '0.72rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>Destinations</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {['Hunza Valley','Skardu','Swat Valley','Naran Kaghan','Fairy Meadows','Lahore'].map(d => (
-                <Link key={d} to="/destinations" style={{ color: 'rgba(255,255,255,0.42)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', transition: 'color 0.18s' }}
+                <GuardedLink key={d} to="/destinations" style={{ color: 'rgba(255,255,255,0.42)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', transition: 'color 0.18s' }}
                   onMouseEnter={e => e.currentTarget.style.color = '#0FA4AF'}
                   onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.42)'}
                 >
                   <ArrowRight size={10} style={{ flexShrink: 0 }} />{d}
-                </Link>
+                </GuardedLink>
               ))}
             </div>
           </div>
@@ -51,12 +52,12 @@ export default function Footer() {
             <h4 style={{ fontWeight: 700, fontSize: '0.72rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>Quick Links</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[{label:'Tour Packages',path:'/packages'},{label:'Travel Blog',path:'/blog'},{label:'About Us',path:'/about'},{label:'Contact',path:'/contact'},{label:'Privacy Policy',path:'/contact'}].map(item => (
-                <Link key={item.label} to={item.path} style={{ color: 'rgba(255,255,255,0.42)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', transition: 'color 0.18s' }}
+                <GuardedLink key={item.label} to={item.path} style={{ color: 'rgba(255,255,255,0.42)', fontSize: '0.8rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px', transition: 'color 0.18s' }}
                   onMouseEnter={e => e.currentTarget.style.color = '#0FA4AF'}
                   onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.42)'}
                 >
                   <ArrowRight size={10} style={{ flexShrink: 0 }} />{item.label}
-                </Link>
+                </GuardedLink>
               ))}
             </div>
           </div>

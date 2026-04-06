@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import GuardedLink from './GuardedLink';
 import { Clock, Users, Mountain, Star, ArrowRight, Calendar } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const DIFFICULTY_COLOR = {
   Easy: { bg: '#f0fdf4', color: '#15803d', border: '#bbf7d0' },
@@ -12,12 +13,18 @@ const DIFFICULTY_COLOR = {
 export default function PackageCard({ pkg, index = 0 }) {
   const { name, image, price, duration, groupSize, difficulty, category, rating, reviews, slug, destinations: pkgDests, features } = pkg;
   const { user, openAuth } = useAuth();
+  const { showToast } = useToast();
   const diffStyle = DIFFICULTY_COLOR[difficulty] || DIFFICULTY_COLOR['Moderate'];
 
   const handleBook = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!user) openAuth('login');
-    else alert(`Inquiry for "${name}" submitted! We'll contact you within 24 hours.`);
+    else
+      showToast({
+        title: 'Inquiry received',
+        message: `Your request for "${name}" is in. We'll contact you within 24 hours.`,
+      });
   };
 
   return (
@@ -28,7 +35,7 @@ export default function PackageCard({ pkg, index = 0 }) {
       transition={{ duration: 0.5, delay: Math.min(index * 0.1, 0.4) }}
       style={{ height: '100%' }}
     >
-      <Link to={`/packages/${slug}`} style={{ display: 'block', textDecoration: 'none', height: '100%' }}>
+      <GuardedLink to={`/packages/${slug}`} style={{ display: 'block', textDecoration: 'none', height: '100%' }}>
         <div className="destination-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Image */}
           <div style={{ position: 'relative', overflow: 'hidden', height: '220px' }}>
@@ -63,14 +70,14 @@ export default function PackageCard({ pkg, index = 0 }) {
           </div>
 
           {/* Content */}
-          <div style={{ padding: '18px 20px 20px', background: 'white', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#111827', marginBottom: '6px', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{name}</h3>
+          <div style={{ padding: '18px 20px 20px', background: 'var(--surface-card)', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-heading)', marginBottom: '6px', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{name}</h3>
 
             {/* Destinations chips */}
             {pkgDests?.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '12px' }}>
                 {pkgDests.slice(0, 3).map((d, i) => (
-                  <span key={i} style={{ fontSize: '0.72rem', padding: '2px 8px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '100px', color: '#6b7280' }}>{d}</span>
+                  <span key={i} style={{ fontSize: '0.72rem', padding: '2px 8px', background: 'var(--surface-muted)', border: '1px solid var(--surface-border)', borderRadius: '100px', color: 'var(--text-muted)' }}>{d}</span>
                 ))}
                 {pkgDests.length > 3 && <span style={{ fontSize: '0.72rem', padding: '2px 8px', background: '#f0fdf4', border: '1px solid #d1fae5', borderRadius: '100px', color: '#024950' }}>+{pkgDests.length - 3}</span>}
               </div>
@@ -78,20 +85,20 @@ export default function PackageCard({ pkg, index = 0 }) {
 
             {/* Stats row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '16px' }}>
-              <div style={{ background: '#f9fafb', borderRadius: '10px', padding: '8px', textAlign: 'center' }}>
-                <Calendar size={14} color="#6b7280" style={{ margin: '0 auto 3px' }} />
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#374151' }}>{duration}</div>
-                <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>Days</div>
+              <div style={{ background: 'var(--surface-muted)', borderRadius: '10px', padding: '8px', textAlign: 'center' }}>
+                <Calendar size={14} color="var(--text-muted)" style={{ margin: '0 auto 3px' }} />
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-body)' }}>{duration}</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted-2)' }}>Days</div>
               </div>
-              <div style={{ background: '#f9fafb', borderRadius: '10px', padding: '8px', textAlign: 'center' }}>
-                <Users size={14} color="#6b7280" style={{ margin: '0 auto 3px' }} />
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#374151' }}>{groupSize}</div>
-                <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>People</div>
+              <div style={{ background: 'var(--surface-muted)', borderRadius: '10px', padding: '8px', textAlign: 'center' }}>
+                <Users size={14} color="var(--text-muted)" style={{ margin: '0 auto 3px' }} />
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-body)' }}>{groupSize}</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted-2)' }}>People</div>
               </div>
               <div style={{ background: diffStyle.bg, border: `1px solid ${diffStyle.border}`, borderRadius: '10px', padding: '8px', textAlign: 'center' }}>
                 <Mountain size={14} color={diffStyle.color} style={{ margin: '0 auto 3px' }} />
                 <div style={{ fontSize: '0.7rem', fontWeight: 600, color: diffStyle.color }}>{difficulty}</div>
-                <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>Level</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted-2)' }}>Level</div>
               </div>
             </div>
 
@@ -103,13 +110,13 @@ export default function PackageCard({ pkg, index = 0 }) {
               >
                 Book Now
               </button>
-              <div style={{ width: '38px', height: '38px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280', transition: 'all 0.2s' }}>
+              <div style={{ width: '38px', height: '38px', background: 'var(--surface-muted)', border: '1px solid var(--surface-border)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', transition: 'all 0.2s' }}>
                 <ArrowRight size={15} />
               </div>
             </div>
           </div>
         </div>
-      </Link>
+      </GuardedLink>
     </motion.div>
   );
 }

@@ -28,6 +28,64 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06);
   --shadow-lg: 0 10px 40px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08);
   --shadow-xl: 0 20px 60px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.1);
+
+  /* Semantic surfaces (inline styles + theme switching) */
+  --surface-page: #ffffff;
+  --surface-muted: #f9fafb;
+  --surface-card: #ffffff;
+  --surface-border: #e5e7eb;
+  --surface-border-subtle: #f3f4f6;
+  --surface-input: #f8faf9;
+  --surface-input-focus: #f0fdf4;
+  --text-body: #374151;
+  --text-heading: #111827;
+  --text-muted: #6b7280;
+  --text-muted-2: #9ca3af;
+  --nav-scrolled-bg: rgba(255, 255, 255, 0.97);
+  --nav-dropdown-bg: #ffffff;
+  --nav-dropdown-border: #e5e7eb;
+  --shadow-header: 0 1px 0 rgba(0, 0, 0, 0.08), 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+html.dark {
+  color-scheme: dark;
+  --surface-page: #0f172a;
+  --surface-muted: #1e293b;
+  --surface-card: #1e293b;
+  --surface-border: #475569;
+  --surface-border-subtle: #334155;
+  --surface-input: #0f172a;
+  --surface-input-focus: #134e4a;
+  --text-body: #e2e8f0;
+  --text-heading: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-muted-2: #64748b;
+  --nav-scrolled-bg: rgba(15, 23, 42, 0.94);
+  --nav-dropdown-bg: #1e293b;
+  --nav-dropdown-border: #475569;
+  --shadow-header: 0 1px 0 rgba(0, 0, 0, 0.35), 0 4px 24px rgba(0, 0, 0, 0.35);
+
+  --gray-50: #1e293b;
+  --gray-100: #334155;
+  --gray-200: #475569;
+  --gray-400: #94a3b8;
+  --gray-500: #94a3b8;
+  --gray-600: #cbd5e1;
+  --gray-700: #e2e8f0;
+  --gray-900: #f8fafc;
+  --off-white: #1e293b;
+  --white: #1e293b;
+  --amber-pale: rgba(212, 136, 26, 0.12);
+}
+
+html.dark .glass-light {
+  background: rgba(30, 41, 59, 0.92);
+  border-color: rgba(71, 85, 105, 0.55);
+}
+
+html.dark .glass-white {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(71, 85, 105, 0.5);
 }
 
 /* ===================================================
@@ -43,15 +101,47 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--white);
-  color: var(--gray-700);
+  background: var(--surface-page);
+  color: var(--text-body);
   line-height: 1.6;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Sticky filter bars: don’t chain horizontal overscroll to the page */
+.sub-nav-strip {
+  overscroll-behavior-x: contain;
+}
+
+/*
+  Chip / sub-tab rows: horizontal trackpad/touch scroll is captured here instead
+  of shifting the page. On wide screens, chips wrap again (see --wrap-xl).
+*/
+.sub-nav-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+  margin-bottom: -2px;
+}
+
+@media (min-width: 1200px) {
+  .sub-nav-chips--wrap-xl {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
 }
 
 /* Hide ALL scrollbars globally while allowing scrolling */
@@ -224,9 +314,9 @@ button {
 }
 
 .btn-secondary {
-  background: white;
-  color: var(--gray-700);
-  border-color: var(--gray-200);
+  background: var(--surface-card);
+  color: var(--text-body);
+  border-color: var(--surface-border);
   box-shadow: var(--shadow-sm);
   display: inline-flex;
   align-items: center;
@@ -292,9 +382,9 @@ button {
    CARDS
    =================================================== */
 .card {
-  background: white;
+  background: var(--surface-card);
   border-radius: 16px;
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--surface-border);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -307,9 +397,9 @@ button {
 
 /* Destination card specific */
 .destination-card {
-  background: white;
+  background: var(--surface-card);
   border-radius: 16px;
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--surface-border);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -374,11 +464,11 @@ button {
    =================================================== */
 .input-dark, .input-field {
   width: 100%;
-  background: white;
-  border: 1.5px solid var(--gray-200);
+  background: var(--surface-input);
+  border: 1.5px solid var(--surface-border);
   border-radius: 10px;
   padding: 13px 18px;
-  color: var(--gray-900);
+  color: var(--text-heading);
   font-size: 0.9rem;
   font-family: 'Inter', sans-serif;
   transition: border-color 0.25s, box-shadow 0.25s;
@@ -391,7 +481,7 @@ button {
 }
 
 .input-dark::placeholder, .input-field::placeholder {
-  color: var(--gray-400);
+  color: var(--text-muted-2);
 }
 
 /* ===================================================
@@ -532,7 +622,7 @@ button {
    =================================================== */
 .mobile-menu-overlay {
   position: fixed; inset: 0;
-  background: white;
+  background: var(--surface-page);
   z-index: 1000;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 24px;

@@ -51,10 +51,10 @@ export default function Destinations() {
             </p>
             {/* Search */}
             <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-              <div style={{ position: 'relative', background: 'white', borderRadius: '12px', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center' }}>
-                <Search size={18} style={{ position: 'absolute', left: '16px', color: '#9ca3af' }} />
-                <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search mountains, cities, valleys..." style={{ flex: 1, padding: '16px 16px 16px 46px', background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', color: '#111827' }} />
-                {search && <button onClick={() => setSearch('')} style={{ padding: '0 16px', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}><X size={16} /></button>}
+              <div style={{ position: 'relative', background: 'var(--surface-card)', borderRadius: '12px', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center' }}>
+                <Search size={18} style={{ position: 'absolute', left: '16px', color: 'var(--text-muted-2)' }} />
+                <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search mountains, cities, valleys..." style={{ flex: 1, padding: '16px 16px 16px 46px', background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem', color: 'var(--text-heading)' }} />
+                {search && <button onClick={() => setSearch('')} style={{ padding: '0 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted-2)' }}><X size={16} /></button>}
               </div>
             </div>
           </motion.div>
@@ -62,50 +62,53 @@ export default function Destinations() {
       </section>
 
       {/* ── Filter bar ── */}
-      <div style={{ position: 'sticky', top: '72px', zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e5e7eb', boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+      <div className="sub-nav-strip" style={{ position: 'sticky', top: '72px', zIndex: 40, background: 'var(--nav-scrolled-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--surface-border)', boxShadow: 'var(--shadow-header)' }}>
         <div className="container" style={{ paddingTop: '12px', paddingBottom: '12px' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+          <div className="sub-nav-chips sub-nav-chips--wrap-xl">
             <button
+              type="button"
               onClick={() => setShowFilters(!showFilters)}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: `1.5px solid ${showFilters ? '#024950' : '#e5e7eb'}`, background: showFilters ? '#024950' : 'white', color: showFilters ? 'white' : '#374151', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+              style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: `1.5px solid ${showFilters ? '#024950' : 'var(--surface-border)'}`, background: showFilters ? '#024950' : 'var(--surface-card)', color: showFilters ? 'white' : 'var(--text-body)', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
             >
               <SlidersHorizontal size={14} />
               Filters {hasFilters && <span style={{ width: '7px', height: '7px', background: '#b05742', borderRadius: '50%', display: 'inline-block' }} />}
             </button>
 
             {regions.map(r => (
-              <button key={r} onClick={() => setRegion(r)} style={{ padding: '7px 14px', borderRadius: '100px', border: `1.5px solid ${region === r ? '#024950' : '#e5e7eb'}`, background: region === r ? '#024950' : 'white', color: region === r ? 'white' : '#374151', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{r}</button>
+              <button type="button" key={r} onClick={() => setRegion(r)} style={{ flexShrink: 0, padding: '7px 14px', borderRadius: '100px', border: `1.5px solid ${region === r ? '#024950' : 'var(--surface-border)'}`, background: region === r ? '#024950' : 'var(--surface-card)', color: region === r ? 'white' : 'var(--text-body)', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{r}</button>
             ))}
 
             {hasFilters && (
-              <button onClick={() => { setSearch(''); setRegion('All'); setCategory('All'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '7px 12px', background: 'none', border: 'none', color: '#ef4444', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', marginLeft: 'auto' }}>
+              <button type="button" onClick={() => { setSearch(''); setRegion('All'); setCategory('All'); }} style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '7px 12px', background: 'none', border: 'none', color: '#ef4444', fontSize: '0.82rem', fontWeight: 500, cursor: 'pointer', marginLeft: 'auto' }}>
                 <X size={13} /> Clear
               </button>
             )}
 
-            <span style={{ marginLeft: hasFilters ? '0' : 'auto', color: '#9ca3af', fontSize: '0.82rem' }}>{filtered.length} results</span>
+            <span style={{ flexShrink: 0, marginLeft: hasFilters ? '0' : 'auto', color: 'var(--text-muted-2)', fontSize: '0.82rem' }}>{filtered.length} results</span>
           </div>
 
           {/* Category row */}
           {showFilters && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f3f4f6', display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', overflow: 'hidden' }}>
-              <span style={{ color: '#9ca3af', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: '4px' }}>Category:</span>
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="sub-nav-strip" style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid var(--surface-border-subtle)', overflow: 'hidden' }}>
+              <div className="sub-nav-chips sub-nav-chips--wrap-xl" style={{ gap: '6px' }}>
+              <span style={{ flexShrink: 0, color: 'var(--text-muted-2)', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: '4px' }}>Category:</span>
               {categories.map(c => (
-                <button key={c} onClick={() => setCategory(c)} style={{ padding: '5px 12px', borderRadius: '100px', border: `1.5px solid ${category === c ? '#964734' : '#e5e7eb'}`, background: category === c ? '#964734' : 'white', color: category === c ? 'white' : '#374151', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{c}</button>
+                <button key={c} onClick={() => setCategory(c)} style={{ flexShrink: 0, padding: '5px 12px', borderRadius: '100px', border: `1.5px solid ${category === c ? '#964734' : 'var(--surface-border)'}`, background: category === c ? '#964734' : 'var(--surface-card)', color: category === c ? 'white' : 'var(--text-body)', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}>{c}</button>
               ))}
+              </div>
             </motion.div>
           )}
         </div>
       </div>
 
       {/* ── Grid ── */}
-      <section style={{ background: '#f9fafb' }}>
+      <section style={{ background: 'var(--surface-muted)' }}>
         <div className="container section">
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 0' }}>
               <MapPin size={48} color="#d1d5db" style={{ margin: '0 auto 16px' }} />
-              <h3 style={{ color: '#374151', fontWeight: 600, fontSize: '1.2rem', marginBottom: '8px' }}>No destinations found</h3>
-              <p style={{ color: '#9ca3af', marginBottom: '24px' }}>Try adjusting your filters</p>
+              <h3 style={{ color: 'var(--text-body)', fontWeight: 600, fontSize: '1.2rem', marginBottom: '8px' }}>No destinations found</h3>
+              <p style={{ color: 'var(--text-muted-2)', marginBottom: '24px' }}>Try adjusting your filters</p>
               <button onClick={() => { setSearch(''); setRegion('All'); setCategory('All'); }} className="btn-primary">Clear All Filters</button>
             </div>
           ) : (
