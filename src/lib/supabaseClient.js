@@ -17,7 +17,12 @@ let client;
 export function getSupabase() {
   if (!isSupabaseConfigured()) return null;
   if (!client) {
-    client = createClient(url, anonKey);
+    client = createClient(url, anonKey, {
+      auth: {
+        detectSessionInUrl: true,
+        flowType: 'pkce',
+      },
+    });
   }
   return client;
 }

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getSupabase } from '../lib/supabaseClient';
+import { getEmailConfirmationRedirectUrl } from '../lib/authRedirect';
 
 const AuthContext = createContext(null);
 
@@ -88,7 +89,10 @@ export function AuthProvider({ children }) {
       const { data, error } = await supabase.auth.signUp({
         email: trimmedEmail,
         password,
-        options: { data: { full_name: displayName } },
+        options: {
+          data: { full_name: displayName },
+          emailRedirectTo: getEmailConfirmationRedirectUrl(),
+        },
       });
       if (error) return { error: error.message };
       if (!data.session) {
