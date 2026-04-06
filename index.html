@@ -12,6 +12,7 @@
     <script>
       (function () {
         try {
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
           if (localStorage.getItem('pakexplorer-theme') === 'dark')
             document.documentElement.classList.add('dark');
         } catch (e) {}
