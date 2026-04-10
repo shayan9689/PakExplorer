@@ -12,6 +12,7 @@ import BlogPost from './pages/BlogPost';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import AuthCallback from './pages/AuthCallback';
+import UpdatePassword from './pages/UpdatePassword';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
@@ -31,6 +32,7 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/auth/update-password" element={<UpdatePassword />} />
         <Route path="/destinations" element={<ProtectedRoute><Destinations /></ProtectedRoute>} />
         <Route path="/destinations/:slug" element={<ProtectedRoute><DestinationDetail /></ProtectedRoute>} />
         <Route path="/packages" element={<ProtectedRoute><Packages /></ProtectedRoute>} />

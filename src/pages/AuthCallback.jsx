@@ -35,6 +35,16 @@ export default function AuthCallback() {
       const session = await waitForSession(supabase);
       if (cancelled) return;
 
+      const hash = typeof window !== 'undefined' ? window.location.hash : '';
+      const search = typeof window !== 'undefined' ? window.location.search : '';
+      const isPasswordRecovery =
+        hash.includes('type=recovery') || search.includes('type=recovery');
+
+      if (session?.user && isPasswordRecovery) {
+        navigate('/auth/update-password', { replace: true });
+        return;
+      }
+
       if (session?.user) {
         showToast({
           title: 'Email verified',

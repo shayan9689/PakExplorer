@@ -27,8 +27,9 @@ const inputStyle = {
 export default function AuthModal() {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const { showAuthModal, authMode, authModalKey, closeAuth, submitCredentials } = useAuth();
+  const { showAuthModal, authMode, authModalKey, closeAuth, submitCredentials, requestPasswordReset } = useAuth();
   const [mode, setMode] = useState(authMode);
+  const [showForgot, setShowForgot] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ export default function AuthModal() {
 
   useEffect(() => {
     setMode(authMode);
+    setShowForgot(false);
   }, [authModalKey, authMode]);
 
   useEffect(() => {
@@ -50,6 +52,27 @@ export default function AuthModal() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormMessage({ type: '', text: '' });
+
+    if (showForgot) {
+      setLoading(true);
+      const result = await requestPasswordReset(form.email);
+      setLoading(false);
+      if (result.error) {
+        setFormMessage({ type: 'error', text: result.error });
+        return;
+      }
+      showToast({
+        title: 'Check your email',
+        message: result.info,
+        durationMs: 3000,
+        floating: true,
+      });
+      setShowForgot(false);
+      setMode('login');
+      setForm((f) => ({ ...f, password: '' }));
+      return;
+    }
+
     if (mode === 'signup') {
       const pwErr = validateSignupPassword(form.password);
       if (pwErr) {
@@ -147,12 +170,16 @@ export default function AuthModal() {
                 </div>
 
                 <AnimatePresence mode="wait">
-                  <motion.div key={mode} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
+                  <motion.div key={`${mode}-${showForgot}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'white', marginBottom: '6px', fontFamily: "'Inter', sans-serif" }}>
-                      {mode === 'login' ? 'Welcome Back!' : 'Join PakExplorer'}
+                      {showForgot ? 'Reset password' : mode === 'login' ? 'Welcome Back!' : 'Join PakExplorer'}
                     </h2>
                     <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                      {mode === 'login' ? 'Sign in to book your dream Pakistan adventure' : 'Join 50,000+ Pakistan travelers today — it\'s free!'}
+                      {showForgot
+                        ? 'Enter your account email and we’ll send you a link to choose a new password.'
+                        : mode === 'login'
+                          ? 'Sign in to book your dream Pakistan adventure'
+                          : 'Join 50,000+ Pakistan travelers today — it\'s free!'}
                     </p>
                   </motion.div>
                 </AnimatePresence>
@@ -163,7 +190,7 @@ export default function AuthModal() {
                 <form onSubmit={handleSubmit}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
-                    {mode === 'signup' && (
+                    {mode === 'signup' && !showForgot && (
                       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ position: 'relative' }}>
                         <User size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'username' ? '#024950' : 'var(--text-muted-2)' }} />
                         <input type="text" placeholder="Username" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={fieldStyle('username')} onFocus={() => setFocused('username')} onBlur={() => setFocused('')} required autoComplete="username" />
@@ -172,9 +199,10 @@ export default function AuthModal() {
 
                     <div style={{ position: 'relative' }}>
                       <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'email' ? '#024950' : 'var(--text-muted-2)' }} />
-                      <input type="email" placeholder="Email address" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={fieldStyle('email')} onFocus={() => setFocused('email')} onBlur={() => setFocused('')} required />
+                      <input type="email" placeholder="Email address" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={fieldStyle('email')} onFocus={() => setFocused('email')} onBlur={() => setFocused('')} required autoComplete="email" />
                     </div>
 
+                    {!showForgot && (
                     <div>
                       <div style={{ position: 'relative' }}>
                         <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'pass' ? '#024950' : 'var(--text-muted-2)' }} />
@@ -194,6 +222,30 @@ export default function AuthModal() {
                           {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
+                      {(mode === 'login' || mode === 'signup') && (
+                        <div style={{ textAlign: 'center', marginTop: '8px' }}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowForgot(true);
+                              setFormMessage({ type: '', text: '' });
+                            }}
+                            style={{
+                              color: '#024950',
+                              fontWeight: 600,
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              fontSize: '0.8rem',
+                              fontFamily: 'Inter, sans-serif',
+                              textDecoration: 'underline',
+                              textUnderlineOffset: '2px',
+                            }}
+                          >
+                            Forgot password?
+                          </button>
+                        </div>
+                      )}
                       {mode === 'signup' && form.password.length > 0 && (
                         <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                           {(() => {
@@ -279,6 +331,7 @@ export default function AuthModal() {
                         </div>
                       )}
                     </div>
+                    )}
                   </div>
 
                   {formMessage.text && (
@@ -310,7 +363,7 @@ export default function AuthModal() {
                       </>
                     ) : (
                       <>
-                        {mode === 'login' ? 'Sign In' : 'Create Free Account'}
+                        {showForgot ? 'Send reset link' : mode === 'login' ? 'Sign In' : 'Create Free Account'}
                         <ArrowRight size={16} />
                       </>
                     )}
@@ -319,10 +372,28 @@ export default function AuthModal() {
 
                 {/* Toggle mode */}
                 <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '20px' }}>
-                  {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-                  <button onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} style={{ color: '#024950', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', fontFamily: 'Inter, sans-serif', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                    {mode === 'login' ? 'Sign up free' : 'Sign in'}
-                  </button>
+                  {showForgot ? (
+                    <>
+                      Remember your password?{' '}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowForgot(false);
+                          setFormMessage({ type: '', text: '' });
+                        }}
+                        style={{ color: '#024950', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', fontFamily: 'Inter, sans-serif', textDecoration: 'underline', textUnderlineOffset: '2px' }}
+                      >
+                        Back to sign in
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+                      <button type="button" onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setShowForgot(false); }} style={{ color: '#024950', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', fontFamily: 'Inter, sans-serif', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                        {mode === 'login' ? 'Sign up free' : 'Sign in'}
+                      </button>
+                    </>
+                  )}
                 </p>
 
                 {/* Trust badges */}

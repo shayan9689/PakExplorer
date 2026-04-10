@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getSupabase } from '../lib/supabaseClient';
-import { getEmailConfirmationRedirectUrl } from '../lib/authRedirect';
+import { getEmailConfirmationRedirectUrl, getPasswordRecoveryRedirectUrl } from '../lib/authRedirect';
 
 const AuthContext = createContext(null);
 
@@ -160,6 +160,28 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  /**
+   * Sends Supabase password-reset email. Generic success copy avoids email enumeration.
+   * @returns {Promise<{ error?: string, info?: string }>}
+   */
+  const requestPasswordReset = async (email) => {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) return { error: 'Enter your email address.' };
+    const supabase = getSupabase();
+    if (!supabase) {
+      return {
+        info: 'Password reset requires Supabase. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.',
+      };
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+      redirectTo: getPasswordRecoveryRedirectUrl(),
+    });
+    if (error) return { error: error.message };
+    return {
+      info: 'If an account exists for that email, we sent a link to reset your password.',
+    };
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -171,6 +193,7 @@ export function AuthProvider({ children }) {
         closeAuth,
         logout,
         submitCredentials,
+        requestPasswordReset,
       }}
     >
       {children}
