@@ -94,7 +94,33 @@ export function AuthProvider({ children }) {
           emailRedirectTo: getEmailConfirmationRedirectUrl(),
         },
       });
-      if (error) return { error: error.message };
+      if (error) {
+        const msg = (error.message || '').toLowerCase();
+        if (
+          msg.includes('already') ||
+          msg.includes('registered') ||
+          msg.includes('exists')
+        ) {
+          return {
+            error:
+              'This email is already registered. Sign in with your password instead.',
+          };
+        }
+        return { error: error.message };
+      }
+
+      const identities = data.user?.identities;
+      if (
+        data.user &&
+        Array.isArray(identities) &&
+        identities.length === 0
+      ) {
+        return {
+          error:
+            'This email is already registered. Sign in with your password instead.',
+        };
+      }
+
       if (!data.session) {
         return {
           info: 'Check your email for a confirmation link before signing in.',
