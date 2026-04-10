@@ -1,9 +1,15 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, User, Eye, EyeOff, ArrowRight, MapPin, Shield, Star } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { X, Mail, Lock, User, Eye, EyeOff, ArrowRight, MapPin, Shield, Star, Check, Sparkles } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import {
+  SIGNUP_PASSWORD_MIN,
+  getPasswordRuleChecks,
+  validateSignupPassword,
+  generateSignupPassword,
+} from '../lib/passwordRules';
 
 const inputStyle = {
   width: '100%',
@@ -23,19 +29,34 @@ export default function AuthModal() {
   const { showToast } = useToast();
   const { showAuthModal, authMode, authModalKey, closeAuth, submitCredentials } = useAuth();
   const [mode, setMode] = useState(authMode);
-
-  useEffect(() => {
-    setMode(authMode);
-  }, [authModalKey, authMode]);
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState('');
   const [formMessage, setFormMessage] = useState({ type: '', text: '' });
+  const prevModeRef = useRef(null);
+
+  useEffect(() => {
+    setMode(authMode);
+  }, [authModalKey, authMode]);
+
+  useEffect(() => {
+    if (prevModeRef.current !== null && prevModeRef.current !== mode) {
+      setFormMessage({ type: '', text: '' });
+    }
+    prevModeRef.current = mode;
+  }, [mode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormMessage({ type: '', text: '' });
+    if (mode === 'signup') {
+      const pwErr = validateSignupPassword(form.password);
+      if (pwErr) {
+        setFormMessage({ type: 'error', text: pwErr });
+        return;
+      }
+    }
     setLoading(true);
     const result = await submitCredentials({
       mode,
@@ -144,8 +165,8 @@ export default function AuthModal() {
 
                     {mode === 'signup' && (
                       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ position: 'relative' }}>
-                        <User size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'name' ? '#024950' : 'var(--text-muted-2)' }} />
-                        <input type="text" placeholder="Full name" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={fieldStyle('name')} onFocus={() => setFocused('name')} onBlur={() => setFocused('')} required />
+                        <User size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'username' ? '#024950' : 'var(--text-muted-2)' }} />
+                        <input type="text" placeholder="Username" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={fieldStyle('username')} onFocus={() => setFocused('username')} onBlur={() => setFocused('')} required autoComplete="username" />
                       </motion.div>
                     )}
 
@@ -154,12 +175,109 @@ export default function AuthModal() {
                       <input type="email" placeholder="Email address" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={fieldStyle('email')} onFocus={() => setFocused('email')} onBlur={() => setFocused('')} required />
                     </div>
 
-                    <div style={{ position: 'relative' }}>
-                      <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'pass' ? '#024950' : 'var(--text-muted-2)' }} />
-                      <input type={showPass ? 'text' : 'password'} placeholder="Password (min 6 chars)" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} style={{ ...fieldStyle('pass'), paddingRight: '44px' }} onFocus={() => setFocused('pass')} onBlur={() => setFocused('')} required minLength={6} />
-                      <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted-2)', display: 'flex' }}>
-                        {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
+                    <div>
+                      <div style={{ position: 'relative' }}>
+                        <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: focused === 'pass' ? '#024950' : 'var(--text-muted-2)' }} />
+                        <input
+                          type={showPass ? 'text' : 'password'}
+                          placeholder="Password"
+                          value={form.password}
+                          onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                          style={{ ...fieldStyle('pass'), paddingRight: '44px' }}
+                          onFocus={() => setFocused('pass')}
+                          onBlur={() => setFocused('')}
+                          required
+                          minLength={mode === 'signup' ? SIGNUP_PASSWORD_MIN : 6}
+                          autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+                        />
+                        <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted-2)', display: 'flex' }}>
+                          {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                      {mode === 'signup' && form.password.length > 0 && (
+                        <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {(() => {
+                            const c = getPasswordRuleChecks(form.password);
+                            const lengthLabel = `At least ${SIGNUP_PASSWORD_MIN} characters`;
+                            return (
+                              <>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: '10px',
+                                    flexWrap: 'wrap',
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '6px',
+                                      fontSize: '0.72rem',
+                                      color: c.length ? '#15803d' : 'var(--text-muted-2)',
+                                      minWidth: 0,
+                                    }}
+                                  >
+                                    <Check size={12} strokeWidth={3} style={{ flexShrink: 0, opacity: c.length ? 1 : 0.35 }} />
+                                    {lengthLabel}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const p = generateSignupPassword();
+                                      setForm((f) => ({ ...f, password: p }));
+                                      setShowPass(true);
+                                    }}
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '6px',
+                                      padding: '6px 12px',
+                                      fontSize: '0.78rem',
+                                      fontWeight: 600,
+                                      color: '#024950',
+                                      background: 'var(--surface-muted)',
+                                      border: '1px solid var(--surface-border)',
+                                      borderRadius: '8px',
+                                      cursor: 'pointer',
+                                      fontFamily: 'Inter, sans-serif',
+                                      flexShrink: 0,
+                                    }}
+                                  >
+                                    <Sparkles size={14} />
+                                    Generate password
+                                  </button>
+                                </div>
+                                <ul
+                                  style={{
+                                    margin: 0,
+                                    padding: 0,
+                                    listStyle: 'none',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '4px',
+                                    fontSize: '0.72rem',
+                                    color: 'var(--text-muted)',
+                                  }}
+                                >
+                                  {[
+                                    { ok: c.lower, label: 'One lowercase letter (a–z)' },
+                                    { ok: c.upper, label: 'One uppercase letter (A–Z)' },
+                                    { ok: c.special, label: 'One special character (!, @, #, …)' },
+                                  ].map(({ ok, label }) => (
+                                    <li key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: ok ? '#15803d' : 'var(--text-muted-2)' }}>
+                                      <Check size={12} strokeWidth={3} style={{ flexShrink: 0, opacity: ok ? 1 : 0.35 }} />
+                                      {label}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </>
+                            );
+                          })()}
+                        </div>
+                      )}
                     </div>
                   </div>
 

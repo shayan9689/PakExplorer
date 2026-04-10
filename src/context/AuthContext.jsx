@@ -14,7 +14,12 @@ function firstDisplayToken(displayName) {
 function mapSessionUser(sessionUser) {
   if (!sessionUser) return null;
   const meta = sessionUser.user_metadata || {};
-  const name = meta.full_name || meta.name || sessionUser.email?.split('@')[0] || 'Traveler';
+  const name =
+    meta.full_name ||
+    meta.username ||
+    meta.name ||
+    sessionUser.email?.split('@')[0] ||
+    'Traveler';
   return { email: sessionUser.email, name, id: sessionUser.id };
 }
 
@@ -90,7 +95,7 @@ export function AuthProvider({ children }) {
         email: trimmedEmail,
         password,
         options: {
-          data: { full_name: displayName },
+          data: { full_name: displayName, username: displayName },
           emailRedirectTo: getEmailConfirmationRedirectUrl(),
         },
       });
@@ -142,7 +147,10 @@ export function AuthProvider({ children }) {
     runPending();
     const meta = data.user?.user_metadata || {};
     const displayName =
-      meta.full_name || meta.name || trimmedEmail.split('@')[0];
+      meta.full_name ||
+      meta.username ||
+      meta.name ||
+      trimmedEmail.split('@')[0];
     return { firstName: firstDisplayToken(displayName) };
   };
 
