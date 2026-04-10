@@ -36,7 +36,17 @@ export default function UpdatePassword() {
       navigate('/', { replace: true });
       return;
     }
-    supabase.auth.getSession().then(({ data: { session } }) => {
+
+    (async () => {
+      let session = null;
+      for (let i = 0; i < 15 && !cancelled; i += 1) {
+        const { data: { session: s } } = await supabase.auth.getSession();
+        if (s?.user) {
+          session = s;
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 200));
+      }
       if (cancelled) return;
       if (!session?.user) {
         setSessionReady(false);
@@ -44,7 +54,8 @@ export default function UpdatePassword() {
         return;
       }
       setSessionReady(true);
-    });
+    })();
+
     return () => {
       cancelled = true;
     };
@@ -89,7 +100,7 @@ export default function UpdatePassword() {
   if (sessionReady !== true) {
     return (
       <div className="container section" style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: 'var(--text-muted)' }}>{sessionReady === null ? 'Loading…' : 'Redirecting…'}</p>
+        <p style={{ color: 'var(--text-muted)' }}>{sessionReady === null ? 'Preparing password reset…' : 'Redirecting…'}</p>
       </div>
     );
   }
