@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import GuardedLink from '../components/GuardedLink';
@@ -53,29 +53,16 @@ function PageWrapper({ children }) {
   );
 }
 
-// ── Hero images ───────────────────────────────────
-const heroImages = [
-  { url: "/blake-verdoorn-cssvEZacHvQ-unsplash.jpg", title: "Hunza Valley", subtitle: "Gilgit-Baltistan" },
-  { url: "/ffaamunchy-IxhT8pyjveY-unsplash.jpg", title: "Fairy Meadows", subtitle: "Nanga Parbat Base" },
-  { url: "/fa-creation-XRoH4UMAE9g-unsplash.jpg", title: "Lahore Fort", subtitle: "Punjab, Pakistan" },
-  { url: "/fa-creation-XRoH4UMAE9g-unsplash.jpg", title: "Swat Valley", subtitle: "Khyber Pakhtunkhwa" },
-];
+const HERO_IMAGE_SRC = '/Landing-page.jpg';
 
 export default function Home() {
-  const [heroIndex, setHeroIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const heroRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, openAuth } = useAuth();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-
-  useEffect(() => {
-    const t = setTimeout(() => setHeroIndex(i => (i + 1) % heroImages.length), 5000);
-    return () => clearTimeout(t);
-  }, [heroIndex]);
 
   useEffect(() => {
     if (user || !location.state?.from) return;
@@ -105,21 +92,12 @@ export default function Home() {
         ref={heroRef}
         style={{ position: 'relative', height: '100vh', minHeight: '680px', overflow: 'hidden', display: 'flex', alignItems: 'center', backgroundColor: '#111827' }}
       >
-        {/* Background */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={heroIndex}
-            initial={{ opacity: 0, scale: 1.06 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: 'easeInOut' }}
-            style={{ position: 'absolute', inset: 0, y: heroY }}
-          >
-            <img src={heroImages[heroIndex].url} alt={heroImages[heroIndex].title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            <div className="hero-overlay" style={{ position: 'absolute', inset: 0 }} />
-            <div className="noise-overlay" />
-          </motion.div>
-        </AnimatePresence>
+        {/* Background — static landing image (no carousel / parallax on image) */}
+        <div style={{ position: 'absolute', inset: 0 }}>
+          <img src={HERO_IMAGE_SRC} alt="Discover Pakistan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div className="hero-overlay" style={{ position: 'absolute', inset: 0 }} />
+          <div className="noise-overlay" />
+        </div>
 
         {/* Content */}
         <motion.div style={{ opacity: heroOpacity, position: 'relative', zIndex: 10, width: '100%' }}>
@@ -130,11 +108,9 @@ export default function Home() {
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.3)', padding: '6px 16px', borderRadius: '100px', marginBottom: '24px' }}>
                   <span style={{ width: '7px', height: '7px', background: '#4ade80', borderRadius: '50%', animation: 'pulse 2s infinite' }} />
                   <MapPin size={13} color="#86efac" />
-                  <AnimatePresence mode="wait">
-                    <motion.span key={heroIndex} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} style={{ color: 'white', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.05em' }}>
-                      {heroImages[heroIndex].subtitle}
-                    </motion.span>
-                  </AnimatePresence>
+                  <span style={{ color: 'white', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.05em' }}>
+                    Mountains, cities & coast
+                  </span>
                 </div>
               </motion.div>
 
@@ -194,13 +170,6 @@ export default function Home() {
             </div>
           </div>
         </motion.div>
-
-        {/* Slide dots */}
-        <div style={{ position: 'absolute', bottom: '32px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', gap: '8px' }}>
-          {heroImages.map((_, i) => (
-            <button key={i} onClick={() => setHeroIndex(i)} style={{ width: i === heroIndex ? '28px' : '8px', height: '8px', borderRadius: '100px', background: i === heroIndex ? 'white' : 'rgba(255,255,255,0.4)', border: 'none', cursor: 'pointer', transition: 'all 0.3s' }} />
-          ))}
-        </div>
 
         {/* Scroll hint */}
         <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }} style={{ position: 'absolute', bottom: '40px', right: '32px', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'rgba(255,255,255,0.45)' }}>

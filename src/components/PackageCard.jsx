@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import GuardedLink from './GuardedLink';
-import { Clock, Users, Mountain, Star, ArrowRight, Calendar } from 'lucide-react';
+import { Users, Mountain, Star, ArrowRight, Calendar } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
 
 const DIFFICULTY_COLOR = {
   Easy: { bg: '#f0fdf4', color: '#15803d', border: '#bbf7d0' },
@@ -11,20 +11,16 @@ const DIFFICULTY_COLOR = {
 };
 
 export default function PackageCard({ pkg, index = 0 }) {
-  const { name, image, price, duration, groupSize, difficulty, category, rating, reviews, slug, destinations: pkgDests, features } = pkg;
+  const { name, image, price, duration, groupSize, difficulty, category, rating, reviews, slug, destinations: pkgDests } = pkg;
+  const navigate = useNavigate();
   const { user, openAuth } = useAuth();
-  const { showToast } = useToast();
   const diffStyle = DIFFICULTY_COLOR[difficulty] || DIFFICULTY_COLOR['Moderate'];
 
-  const handleBook = (e) => {
+  const handleViewDetails = (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!user) openAuth('login');
-    else
-      showToast({
-        title: 'Inquiry received',
-        message: `Your request for "${name}" is in. We'll contact you within 24 hours.`,
-      });
+    else navigate(`/packages/${slug}`);
   };
 
   return (
@@ -105,10 +101,11 @@ export default function PackageCard({ pkg, index = 0 }) {
             {/* CTA row */}
             <div style={{ marginTop: 'auto', display: 'flex', gap: '8px' }}>
               <button
-                onClick={handleBook}
+                type="button"
+                onClick={handleViewDetails}
                 style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg, #024950, #0FA4AF)', color: 'white', border: 'none', borderRadius: '9px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 3px 10px rgba(26,122,74,0.25)' }}
               >
-                Book Now
+                View Details
               </button>
               <div style={{ width: '38px', height: '38px', background: 'var(--surface-muted)', border: '1px solid var(--surface-border)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', transition: 'all 0.2s' }}>
                 <ArrowRight size={15} />
