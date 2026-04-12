@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, MapPin, ChevronDown, LogOut, Moon, Sun } from 'lucide-react';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
+import { Menu, X, MapPin, LogOut, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -119,11 +119,16 @@ export default function Navbar() {
     };
   }, [userMenuOpen]);
 
-  const isTransparent = isHome && !scrolled;
+  /** Hero only: light nav text over dark hero. Scrolled / inner pages: dark text on frosted glass. */
+  const isOverHero = isHome && !scrolled;
 
-  const headerBg = isTransparent ? 'transparent' : 'var(--nav-scrolled-bg)';
-  const headerShadow = isTransparent ? 'none' : 'var(--shadow-header)';
-  const headerBlur = isTransparent ? 'none' : 'blur(20px)';
+  const headerBg = isDark
+    ? 'linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(30,41,59,0.38) 42%, rgba(15,23,42,0.55) 100%)'
+    : 'linear-gradient(180deg, rgba(255,255,255,0.62) 0%, rgba(255,255,255,0.22) 45%, rgba(255,255,255,0.12) 100%)';
+  const headerBlur = 'blur(28px) saturate(210%) brightness(1.03)';
+  const headerShadow = isDark
+    ? 'inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(255,255,255,0.06), inset 0 0 80px rgba(255,255,255,0.03), 0 10px 44px rgba(0,0,0,0.22)'
+    : 'inset 0 1px 0 rgba(255,255,255,0.55), inset 0 -1px 0 rgba(255,255,255,0.2), inset 0 0 100px rgba(255,255,255,0.15), 0 10px 40px rgba(0,0,0,0.06)';
 
   return (
     <>
@@ -137,28 +142,33 @@ export default function Navbar() {
           left: 0,
           right: 0,
           zIndex: 50,
-          transition: 'all 0.4s ease',
+          transition: 'background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease',
           background: headerBg,
           backdropFilter: headerBlur,
+          WebkitBackdropFilter: headerBlur,
           boxShadow: headerShadow,
         }}
       >
-        <div
+        <motion.div
+          animate={{ height: scrolled ? 64 : 72 }}
+          transition={{ type: 'spring', stiffness: 320, damping: 32, mass: 0.6 }}
           style={{
             padding: '0 clamp(16px, 4vw, 40px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: '72px',
             width: '100%',
+            overflow: 'visible',
           }}
         >
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-            <div
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+            <motion.div
               className="pulse-glow"
+              animate={{ width: scrolled ? 36 : 38, height: scrolled ? 36 : 38 }}
+              whileHover={{ boxShadow: '0 6px 22px rgba(26,122,74,0.45)' }}
+              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
               style={{
-                width: '38px',
-                height: '38px',
                 borderRadius: '10px',
                 background: 'linear-gradient(135deg, #024950, #0FA4AF)',
                 display: 'flex',
@@ -167,15 +177,15 @@ export default function Navbar() {
                 boxShadow: '0 4px 14px rgba(26,122,74,0.35)',
               }}
             >
-              <MapPin size={18} color="white" />
-            </div>
+              <MapPin size={scrolled ? 17 : 18} color="white" />
+            </motion.div>
             <div style={{ lineHeight: 1 }}>
               <span
                 style={{
                   fontWeight: 800,
                   fontSize: '1.15rem',
                   letterSpacing: '-0.01em',
-                  color: isTransparent ? 'white' : 'var(--text-heading)',
+                  color: isOverHero ? 'white' : 'var(--text-heading)',
                 }}
               >
                 Pak
@@ -194,50 +204,76 @@ export default function Navbar() {
                 Explorer
               </span>
             </div>
-          </Link>
+            </Link>
+          </motion.div>
 
           {user ? (
           <nav style={{ display: 'none' }} className="hide-mobile">
+            <LayoutGroup>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               {navLinks.map((link) => {
                 const isActive =
                   location.pathname === link.path || location.pathname.startsWith(link.path + '/');
-                const baseColor = isTransparent ? 'rgba(255,255,255,0.88)' : 'var(--text-body)';
-                const activeColor = '#024950';
+                const baseColor = isOverHero ? 'rgba(255,255,255,0.88)' : 'var(--text-body)';
+                const activeColor = isOverHero ? '#fff' : '#024950';
+                const pillBg = isOverHero
+                  ? 'linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(175,221,229,0.22) 100%)'
+                  : isDark
+                    ? 'linear-gradient(180deg, rgba(15,164,175,0.22) 0%, rgba(2,73,80,0.28) 100%)'
+                    : 'linear-gradient(180deg, rgba(2,73,80,0.16) 0%, rgba(15,164,175,0.12) 100%)';
+                const pillOutline = isOverHero
+                  ? 'inset 0 0 0 1px rgba(255,255,255,0.35)'
+                  : isDark
+                    ? 'inset 0 0 0 1px rgba(15,164,175,0.35)'
+                    : 'inset 0 0 0 1px rgba(2,73,80,0.18)';
+                const linkClass = [
+                  'nav-desktop-link',
+                  isActive ? 'nav-desktop-link--active' : '',
+                  isOverHero ? 'nav-desktop-link--hero' : '',
+                  isDark && !isOverHero ? 'nav-desktop-link--dark' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ');
                 return (
+                  <motion.div key={link.path} whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
                   <Link
-                    key={link.path}
                     to={link.path}
+                    className={linkClass}
                     style={{
+                      position: 'relative',
+                      display: 'inline-block',
                       padding: '8px 14px',
                       borderRadius: '8px',
                       fontSize: '0.9rem',
-                      fontWeight: 500,
+                      fontWeight: isActive ? 600 : 500,
                       textDecoration: 'none',
-                      transition: 'all 0.2s',
+                      transition: 'color 0.2s ease',
                       color: isActive ? activeColor : baseColor,
-                      background: isActive ? 'rgba(26,122,74,0.12)' : 'transparent',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.background = isTransparent
-                          ? 'rgba(255,255,255,0.12)'
-                          : 'var(--surface-muted)';
-                        e.currentTarget.style.color = isTransparent ? 'white' : 'var(--text-heading)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.color = baseColor;
-                      }
+                      background: 'transparent',
+                      zIndex: 1,
                     }}
                   >
+                    {isActive && (
+                      <motion.span
+                        layoutId="navbar-active-pill"
+                        transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          borderRadius: '8px',
+                          background: pillBg,
+                          zIndex: -1,
+                          boxShadow: pillOutline,
+                        }}
+                      />
+                    )}
                     {link.label}
                   </Link>
+                  </motion.div>
                 );
               })}
             </div>
+            </LayoutGroup>
           </nav>
           ) : (
             <div className="hide-mobile" style={{ flex: 1 }} aria-hidden />
@@ -245,54 +281,55 @@ export default function Navbar() {
 
           <div style={{ display: 'none', alignItems: 'center', gap: '10px' }} className="hide-mobile">
             {user ? (
-              <div ref={userMenuRef} style={{ position: 'relative' }}>
+              <div ref={userMenuRef} style={{ position: 'relative', zIndex: 60, overflow: 'visible' }}>
                 <button
                   type="button"
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  aria-expanded={userMenuOpen}
+                  aria-haspopup="menu"
+                  aria-label={`Account menu, ${user.name}`}
+                  title={user.name}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px',
-                    padding: '8px 14px',
-                    borderRadius: '10px',
-                    border: `1.5px solid ${
-                      isTransparent ? 'rgba(255,255,255,0.3)' : 'var(--surface-border)'
+                    justifyContent: 'center',
+                    width: '40px',
+                    height: '40px',
+                    padding: 0,
+                    borderRadius: '50%',
+                    border: `2px solid ${
+                      isOverHero
+                        ? 'rgba(255,255,255,0.45)'
+                        : isDark
+                          ? 'rgba(255,255,255,0.2)'
+                          : 'rgba(2,73,80,0.2)'
                     }`,
-                    background: isTransparent ? 'rgba(255,255,255,0.12)' : 'var(--surface-card)',
+                    background: isOverHero
+                      ? 'rgba(255,255,255,0.15)'
+                      : isDark
+                        ? 'rgba(255,255,255,0.08)'
+                        : 'rgba(255,255,255,0.5)',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
+                    boxShadow: userMenuOpen ? '0 0 0 3px rgba(15,164,175,0.35)' : 'none',
                   }}
                 >
                   <div
                     style={{
-                      width: '28px',
-                      height: '28px',
+                      width: '32px',
+                      height: '32px',
                       borderRadius: '50%',
                       background: 'linear-gradient(135deg, #024950, #0FA4AF)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: 'white',
-                      fontSize: '0.78rem',
+                      fontSize: '0.8rem',
                       fontWeight: 700,
                     }}
                   >
                     {user.name[0].toUpperCase()}
                   </div>
-                  <span
-                    style={{
-                      fontSize: '0.88rem',
-                      fontWeight: 500,
-                      color: isTransparent ? 'white' : 'var(--text-body)',
-                    }}
-                  >
-                    {user.name}
-                  </span>
-                  <ChevronDown
-                    size={14}
-                    color={isTransparent ? 'rgba(255,255,255,0.7)' : 'var(--text-muted-2)'}
-                    style={{ transform: userMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
-                  />
                 </button>
                 <AnimatePresence>
                   {userMenuOpen && (
@@ -301,16 +338,18 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 8, scale: 0.96 }}
                       transition={{ duration: 0.15 }}
+                      role="menu"
                       style={{
                         position: 'absolute',
                         right: 0,
-                        top: 'calc(100% + 8px)',
+                        top: 'calc(100% + 10px)',
+                        zIndex: 200,
                         width: '228px',
                         background: 'var(--nav-dropdown-bg)',
                         border: '1px solid var(--nav-dropdown-border)',
                         borderRadius: '12px',
                         padding: '8px',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+                        boxShadow: '0 12px 40px rgba(0,0,0,0.22)',
                       }}
                     >
                       <button
@@ -362,7 +401,7 @@ export default function Navbar() {
                     padding: '8px 16px',
                     fontSize: '0.88rem',
                     fontWeight: 500,
-                    color: isTransparent ? 'rgba(255,255,255,0.88)' : 'var(--text-body)',
+                    color: isOverHero ? 'rgba(255,255,255,0.88)' : 'var(--text-body)',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
@@ -370,14 +409,14 @@ export default function Navbar() {
                     transition: 'all 0.2s',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = isTransparent
+                    e.currentTarget.style.background = isOverHero
                       ? 'rgba(255,255,255,0.1)'
                       : 'var(--surface-muted)';
-                    e.currentTarget.style.color = isTransparent ? 'white' : 'var(--text-heading)';
+                    e.currentTarget.style.color = isOverHero ? 'white' : 'var(--text-heading)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'none';
-                    e.currentTarget.style.color = isTransparent
+                    e.currentTarget.style.color = isOverHero
                       ? 'rgba(255,255,255,0.88)'
                       : 'var(--text-body)';
                   }}
@@ -408,23 +447,46 @@ export default function Navbar() {
               justifyContent: 'center',
               borderRadius: '10px',
               border: `1.5px solid ${
-                isTransparent ? 'rgba(255,255,255,0.35)' : 'var(--surface-border)'
+                isOverHero
+                  ? 'rgba(255,255,255,0.35)'
+                  : isDark
+                    ? 'rgba(255,255,255,0.14)'
+                    : 'rgba(255,255,255,0.55)'
               }`,
-              background: isTransparent ? 'rgba(255,255,255,0.12)' : 'var(--surface-card)',
-              color: isTransparent ? 'white' : 'var(--text-body)',
+              background: isOverHero
+                ? 'rgba(255,255,255,0.12)'
+                : isDark
+                  ? 'rgba(255,255,255,0.1)'
+                  : 'rgba(255,255,255,0.45)',
+              color: isOverHero ? 'white' : 'var(--text-body)',
               cursor: 'pointer',
               transition: 'all 0.2s',
             }}
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-        </div>
+        </motion.div>
       </motion.header>
 
       <style>{`
         @media(min-width:768px){
           header nav { display: block !important; }
           header .hide-mobile { display: flex !important; }
+        }
+        /* Only real pointers: avoid “stuck” hover boxes; teal-tinted hover (not white cards) */
+        @media (hover: hover) and (pointer: fine) {
+          .nav-desktop-link:not(.nav-desktop-link--active):hover {
+            background: rgba(2, 73, 80, 0.1) !important;
+            color: #024950 !important;
+          }
+          .nav-desktop-link--hero:not(.nav-desktop-link--active):hover {
+            background: rgba(255, 255, 255, 0.16) !important;
+            color: #fff !important;
+          }
+          .nav-desktop-link--dark:not(.nav-desktop-link--active):not(.nav-desktop-link--hero):hover {
+            background: rgba(15, 164, 175, 0.14) !important;
+            color: var(--text-heading) !important;
+          }
         }
       `}</style>
 
